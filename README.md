@@ -30,13 +30,19 @@ Time Series Platform metadata consists of two concepts:
 
 Metadata can also be queried from the API, which is then used to query the actual measurements.
 
+Metadata is stored in regular Postgres tables.
+
 ## Data Ingestion
 
-Time Series Platform data ingestion is handled with just a simple HTTP POST endpoint, which shifts the responsibility of reliability to the sender.
+Time Series Platform data ingestion is handled with just a simple HTTP POST endpoint,
+which shifts the responsibility of reliability to the sender.
 
-Data ingestion requires the sender to include an integration API key with the data, which is then used to identify the data source.
+Data ingestion requires the sender to include an integration API key with the data,
+which is then used to identify the data source.
 
 See the [measurement endpoint](#measurement) for instructions.
+
+Measurements are stored in Timescale hypertables.
 
 ## Measurements
 
