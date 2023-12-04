@@ -1,10 +1,12 @@
 using Iiroki.TimeSeriesPlatform.Dto;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Iiroki.TimeSeriesPlatform.Controllers;
 
 [ApiController]
 [Route("tag")]
+[Authorize(Roles = "reader")]
 public class TagController : ControllerBase
 {
     [HttpGet]
