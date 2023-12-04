@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using Iiroki.TimeSeriesPlatform.Constants;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
@@ -9,8 +10,6 @@ namespace Iiroki.TimeSeriesPlatform.Middleware;
 public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
     private const string ApiKeyHeader = "X-API-KEY";
-    private const string KindClaim = "kind";
-    private const string IdClaim = "id";
 
     private readonly IApiKeyService _apiKeyService;
 
@@ -36,28 +35,28 @@ public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationS
         var claims = new List<Claim>();
         if (_apiKeyService.IsAdminApiKey(apiKey))
         {
-            claims.Add(new("kind", "admin"));
+            claims.Add(new(AuthenticationClaim.Kind, AuthenticationKind.Admin));
         }
         else if (_apiKeyService.IsReaderApiKey(apiKey))
         {
-            claims.Add(new("kind", "reader"));
+            claims.Add(new(AuthenticationClaim.Kind, AuthenticationKind.Reader));
         }
         else
         {
             var integration = _apiKeyService.GetIntegrationFromApiKey(apiKey);
             if (!string.IsNullOrWhiteSpace(integration))
             {
-                claims.Add(new("kind", "integration"));
-                claims.Add(new("integration", integration));
+                claims.Add(new(AuthenticationClaim.Kind, AuthenticationKind.Integration));
+                claims.Add(new(AuthenticationClaim.Id, integration));
             }
         }
 
         if (claims.Count == 0)
         {
-            return Task.FromResult(AuthenticateResult.Fail("API key did not produce any claims"));
+            return Task.FromResult(AuthenticateResult.Fail("Invalid API key"));
         }
 
-        var identity = new ClaimsIdentity(claims, Scheme.Name, IdClaim, KindClaim);
+        var identity = new ClaimsIdentity(claims, Scheme.Name, AuthenticationClaim.Id, AuthenticationClaim.Kind);
         var principal = new ClaimsPrincipal(identity);
         var ticket = new AuthenticationTicket(principal, Scheme.Name);
         return Task.FromResult(AuthenticateResult.Success(ticket));

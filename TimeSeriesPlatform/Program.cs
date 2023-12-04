@@ -5,16 +5,14 @@ using Microsoft.AspNetCore.Authentication;
 
 // Configuration:
 var builder = WebApplication.CreateBuilder(args);
+
 builder
     .Services
     .AddAuthentication()
-    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { /* NOP */ });
+    .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
 
 builder.Services.AddSingleton<IApiKeyService, ApiKeyService>();
-
-
 builder.Services.AddControllers();
-
 builder.Services.AddSwaggerGen();
 
 // Request pipeline:

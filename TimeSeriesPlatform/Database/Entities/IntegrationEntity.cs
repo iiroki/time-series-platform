@@ -13,7 +13,7 @@ public class IntegrationEntity
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
 
-    public string Slug { get; set; } = default!;
-
     public string Name { get; set; } = default!;
+
+    public string Slug { get; set; } = default!;
 }
