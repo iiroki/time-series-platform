@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Iiroki.TimeSeriesPlatform</RootNamespace>
+    <RootNamespace>Iiroki.TimeSeriesPlatform.Tests</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

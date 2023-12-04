@@ -12,4 +12,10 @@ public static class ConfigExtensions
 
         return value;
     }
+
+    public static string GetOrDefault(this IConfiguration config, string key, string defaultValue)
+    {
+        var value = config[key];
+        return value ?? defaultValue;
+    }
 }

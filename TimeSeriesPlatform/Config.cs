@@ -3,8 +3,9 @@ namespace Iiroki.TimeSeriesPlatform;
 public static class Config
 {
     public const string DatabaseUrl = "DATABASE_URL";
-    public const string ApiKeyAdmin = "API_KEY_ADMIN";
-    public const string ApiKeyReader = "API_KEY_READER";
 
-    private const string ApiKeyPrefix = "API_KEY__";
+    public const string ApiKey = "API_KEY";
+    public const string ApiKeyIntegration = $"{ApiKey}_INTEGRATION";
+    public const string ApiKeyAdmin = $"{ApiKey}_ADMIN";
+    public const string ApiKeyReader = $"{ApiKey}_READER";
 }

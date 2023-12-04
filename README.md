@@ -16,7 +16,7 @@ Time Series Platform contains three kinds of authentications:
 Authentication is handled with API keys stored in the following environment variables:
 - `API_KEY_ADMIN`
 - `API_KEY_READER`
-- `API_KEY__<integration>` (yes, there's two underscores)
+- `API_KEY_INTEGRATION__<integration>` (yes, there's two underscores)
     - `<integration>` should match the integration slug stored in the database!
 
 ## Metadata Management
