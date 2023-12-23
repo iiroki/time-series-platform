@@ -1,5 +1,7 @@
 using Iiroki.TimeSeriesPlatform.Database.Entities;
+using Iiroki.TimeSeriesPlatform.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 
 namespace Iiroki.TimeSeriesPlatform.Database;
 
@@ -26,4 +28,19 @@ public class TspDbContext : DbContext
     }
 
     public static string ToTableName(string name) => $"{Schema}.\"{name}\"";
+
+    public static NpgsqlDataSource CreateSource(IConfiguration config)
+    {
+        var connection = config.GetRequired(Config.DatabaseUrl);
+        return new NpgsqlDataSourceBuilder(connection).Build();
+    }
+
+    public static DbContextOptions<TspDbContext> CreateOptions(IConfiguration config)
+    {
+        var builder = new DbContextOptionsBuilder<TspDbContext>();
+        builder.UseNpgsql(CreateSource(config));
+        return builder.Options;
+    }
+
+    public static TspDbContext Create(IConfiguration config) => new(CreateOptions(config));
 }

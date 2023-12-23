@@ -1,4 +1,4 @@
-namespace Iiroki.TimeSeriesPlatform;
+namespace Iiroki.TimeSeriesPlatform.Extensions;
 
 public static class ConfigExtensions
 {

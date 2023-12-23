@@ -1,4 +1,5 @@
 using Iiroki.TimeSeriesPlatform;
+using Iiroki.TimeSeriesPlatform.Extensions;
 using Iiroki.TimeSeriesPlatform.Middleware;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -11,6 +12,7 @@ builder
     .AddAuthentication()
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
 
+builder.Services.AddTspDbContext();
 builder.Services.AddSingleton<IApiKeyService, ApiKeyService>();
 builder.Services.AddControllers();
 builder.Services.AddSwaggerGen();

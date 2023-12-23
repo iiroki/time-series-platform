@@ -1,8 +1,10 @@
+using Iiroki.TimeSeriesPlatform.Extensions;
+
 namespace Iiroki.TimeSeriesPlatform.Services;
 
 public class ApiKeyService : IApiKeyService
 {
-    private readonly Dictionary<string, string> _integrationApiKeys = new();
+    private readonly Dictionary<string, string> _integrationApiKeys = new(); // API key -> Slug
     private readonly string _adminApiKey;
     private readonly string _readerApiKey;
 
@@ -13,7 +15,7 @@ public class ApiKeyService : IApiKeyService
         {
             if (!string.IsNullOrWhiteSpace(apiKey.Value))
             {
-                _integrationApiKeys.Add(apiKey.Key, apiKey.Value);
+                _integrationApiKeys.Add(apiKey.Value, apiKey.Key);
             }
         }
 
