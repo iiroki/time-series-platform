@@ -13,17 +13,20 @@ builder
     .AddAuthentication()
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
 
-builder.Services.AddTspDbContext(builder.Configuration);
+builder.Services.AddTspDatabase(builder.Configuration);
 builder.Services.AddSingleton<IApiKeyService, ApiKeyService>();
+builder.Services.AddSingleton<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IMetadataService, MetadataService>();
 
 builder.Services.AddControllers();
 builder.Services.AddSwaggerDoc();
-builder.Services.AddMvcCore(opt =>
-{
-    opt.Filters.Add(new ConsumesAttribute("application/json"));
-    opt.Filters.Add(new ProducesAttribute("application/json"));
-});
+builder
+    .Services
+    .AddMvcCore(opt =>
+    {
+        opt.Filters.Add(new ConsumesAttribute("application/json"));
+        opt.Filters.Add(new ProducesAttribute("application/json"));
+    });
 
 // Request pipeline:
 var app = builder.Build();

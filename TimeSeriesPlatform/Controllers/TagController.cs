@@ -6,7 +6,7 @@ namespace Iiroki.TimeSeriesPlatform.Controllers;
 
 [ApiController]
 [Route("tag")]
-[Authorize(Roles = "reader")]
+[Authorize]
 public class TagController : ControllerBase
 {
     [HttpGet]

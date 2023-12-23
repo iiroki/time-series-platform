@@ -7,9 +7,11 @@ namespace Iiroki.TimeSeriesPlatform.Extensions;
 
 public static class StartupExtensions
 {
-    public static void AddTspDbContext(this IServiceCollection services, IConfiguration config)
+    public static void AddTspDatabase(this IServiceCollection services, IConfiguration config)
     {
-        services.AddDbContext<TspDbContext>(opt => opt.UseNpgsql(TspDbContext.CreateSource(config)));
+        var source = TspDbContext.CreateSource(config);
+        services.AddSingleton(source);
+        services.AddDbContext<TspDbContext>(opt => opt.UseNpgsql(source));
     }
 
     public static void AddSwaggerDoc(this IServiceCollection services)

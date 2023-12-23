@@ -4,5 +4,5 @@ namespace Iiroki.TimeSeriesPlatform.Services;
 
 public interface IMeasurementService
 {
-    public Task SaveMeasurementsAsync(IList<MeasurementDto> measurements, CancellationToken ct);
+    public Task SaveMeasurementsAsync(IList<MeasurementDto> measurements, string integrationSlug, CancellationToken ct);
 }

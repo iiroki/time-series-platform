@@ -20,7 +20,7 @@ public class IntegrationController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = AuthenticationKind.ReaderOrAdmin)]
-    public async Task<List<IntegrationDto>> Get(CancellationToken ct)
+    public async Task<List<IntegrationDto>> GetAsync(CancellationToken ct)
     {
         var integrations = await _metadataService.GetIntegrationsAsync(ct);
         return integrations
@@ -38,7 +38,10 @@ public class IntegrationController : ControllerBase
 
     [HttpPost]
     [Authorize(Roles = AuthenticationKind.Admin)]
-    public async Task<ActionResult<IntegrationDto>> Create([FromBody] IntegrationCreateDto data, CancellationToken ct)
+    public async Task<ActionResult<IntegrationDto>> CreateAsync(
+        [FromBody] IntegrationCreateDto data,
+        CancellationToken ct
+    )
     {
         var integration = await _metadataService.CreateIntegrationAsync(data.Name, data.Slug, ct);
         return new IntegrationDto

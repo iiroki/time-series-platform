@@ -4,13 +4,20 @@ namespace Iiroki.TimeSeriesPlatform.Services;
 
 public class ApiKeyService : IApiKeyService
 {
-    private readonly Dictionary<string, string> _integrationApiKeys = new(); // API key -> Slug
+    private readonly Dictionary<string, string> _integrationApiKeys = []; // API key -> Slug
     private readonly string _adminApiKey;
     private readonly string _readerApiKey;
 
     public ApiKeyService(IConfiguration config)
     {
-        var integrationApiKeys = config.GetSection(Config.ApiKeyIntegration).GetChildren().ToList();
+        var integrationApiKeyPrefix = $"{Config.ApiKeyIntegration}__";
+        //var integrationApiKeys = config.GetSection(Config.ApiKeyIntegration).GetChildren().ToList();
+        var integrationApiKeys = config
+            .AsEnumerable()
+            .Where(c => c.Key.StartsWith(integrationApiKeyPrefix))
+            .Select(c => KeyValuePair.Create(c.Key[integrationApiKeyPrefix.Length..], c.Value))
+            .ToList();
+
         foreach (var apiKey in integrationApiKeys)
         {
             if (!string.IsNullOrWhiteSpace(apiKey.Value))
