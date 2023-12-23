@@ -10,13 +10,13 @@ namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 [Index(nameof(IntegrationId), nameof(TagId), nameof(Timestamp), IsUnique = true)]
 public class MeasurementEntity
 {
-    public long TagId { get; set; }
-
-    public long IntegrationId { get; set; }
+    public DateTime Timestamp { get; set; }
 
     public double Value { get; set; }
 
-    public DateTime Timestamp { get; set; }
+    public long TagId { get; set; }
+
+    public long IntegrationId { get; set; }
 
     // Navigations:
 
