@@ -1,5 +1,6 @@
 using Iiroki.TimeSeriesPlatform.Database.Entities;
 using Iiroki.TimeSeriesPlatform.Services;
+using Iiroki.TimeSeriesPlatform.Services.Exceptions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
@@ -44,5 +45,34 @@ public class MetadataServiceTests : DatabaseTestBase
                 Assert.That(a.Slug, Is.EqualTo(e.Slug));
             }
         });
+    }
+
+    [Test]
+    public async Task MetadataService_CreateIntegrationAsync_Ok()
+    {
+        var name = "Test Integration";
+        var slug = "integration";
+        var result = await _metadataService.CreateIntegrationAsync(name, slug, CancellationToken.None);
+        var integrations = await _metadataService.GetIntegrationsAsync(CancellationToken.None);
+        var integration = integrations.FirstOrDefault(i => i.Id == result.Id);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result.Name, Is.EqualTo(name));
+            Assert.That(result.Slug, Is.EqualTo(slug));
+            Assert.That(integration, Is.Not.Null);
+        });
+    }
+
+    [Test]
+    public async Task MetadataService_CreateIntegrationAsync_Unique_Error()
+    {
+        var slug = "integration";
+        await _metadataService.CreateIntegrationAsync("Test Integration", slug, CancellationToken.None);
+
+        Assert.ThrowsAsync<MetadataServiceException>(
+            async () =>
+                await _metadataService.CreateIntegrationAsync("Duplicate Integration", slug, CancellationToken.None)
+        );
     }
 }

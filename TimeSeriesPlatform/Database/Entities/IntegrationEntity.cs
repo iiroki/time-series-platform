@@ -16,4 +16,7 @@ public class IntegrationEntity
     public string Name { get; set; } = default!;
 
     public string Slug { get; set; } = default!;
+
+    public override string ToString() =>
+        string.Join(", ", $"{nameof(Id)} = {Id}", $"{nameof(Name)} = {Name}", $"{nameof(Slug)} = {Slug}");
 }

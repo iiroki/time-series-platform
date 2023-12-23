@@ -44,9 +44,13 @@ See the [measurement endpoint](#measurement) for instructions.
 
 Measurements are stored in Timescale hypertables.
 
-## Measurements
+## Notifications
 
 TODO
+
+## OpenAPI
+
+Time Series Platform also contains a comprehensive OpenAPI documentation implemented with Swagger.
 
 # API
 

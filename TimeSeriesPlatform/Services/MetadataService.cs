@@ -1,5 +1,6 @@
 using Iiroki.TimeSeriesPlatform.Database;
 using Iiroki.TimeSeriesPlatform.Database.Entities;
+using Iiroki.TimeSeriesPlatform.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Iiroki.TimeSeriesPlatform.Services;
@@ -18,9 +19,21 @@ public class MetadataService : IMetadataService
     public async Task<List<IntegrationEntity>> GetIntegrationsAsync(CancellationToken ct) =>
         await _dbContext.Integration.AsNoTracking().ToListAsync(ct);
 
-    public Task<IntegrationEntity> CreateIntegrationAsync(string name, string slug, CancellationToken ct)
+    public async Task<IntegrationEntity> CreateIntegrationAsync(string name, string slug, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var integration = new IntegrationEntity { Name = name, Slug = slug };
+
+        _dbContext.Integration.Add(integration);
+        try
+        {
+            await _dbContext.SaveChangesAsync(ct);
+            _logger.LogInformation("Created integration: {I}", integration);
+            return integration;
+        }
+        catch (Exception ex)
+        {
+            throw new MetadataServiceException($"Could not create integration: {integration}", ex);
+        }
     }
 
     public Task<List<TagEntity>> GetTagsAsync(CancellationToken ct)

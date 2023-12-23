@@ -9,7 +9,7 @@ namespace Iiroki.TimeSeriesPlatform.Middleware;
 
 public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
 {
-    private const string ApiKeyHeader = "X-API-KEY";
+    public const string ApiKeyHeader = "X-API-KEY";
 
     private readonly IApiKeyService _apiKeyService;
 

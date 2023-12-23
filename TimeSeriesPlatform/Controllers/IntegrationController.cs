@@ -19,20 +19,21 @@ public class IntegrationController : ControllerBase
     }
 
     [HttpGet]
-    public IEnumerable<IntegrationDto> Get()
+    [Authorize(Roles = AuthenticationKind.ReaderOrAdmin)]
+    public async Task<List<IntegrationDto>> Get(CancellationToken ct)
     {
-        return new List<IntegrationDto>();
+        var integrations = await _metadataService.GetIntegrationsAsync(ct);
+        return integrations.Select(i => new IntegrationDto{ Id = i.Id, Name = i.Name, Slug = i.Slug }).ToList();
     }
 
     [HttpPost]
     [Authorize(Roles = AuthenticationKind.Admin)]
     public async Task<ActionResult<IntegrationDto>> Create(
-        [FromBody] string name,
-        [FromBody] string slug,
+        [FromBody] IntegrationCreateDto data,
         CancellationToken ct
     )
     {
-        var integration = await _metadataService.CreateIntegrationAsync(name, slug, ct);
+        var integration = await _metadataService.CreateIntegrationAsync(data.Name, data.Slug, ct);
         return new IntegrationDto
         {
             Id = integration.Id,
