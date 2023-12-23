@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 
 /// <summary>
-/// Tag table schema.
+/// Tag schema.
 /// </summary>
 [PrimaryKey(nameof(Id))]
 [Index(nameof(Slug), IsUnique = true)]
@@ -15,5 +15,5 @@ public class TagEntity
 
     public string Slug { get; set; } = default!;
 
-    public string Name { get; set; } = default!;
+    public string? Name { get; set; }
 }

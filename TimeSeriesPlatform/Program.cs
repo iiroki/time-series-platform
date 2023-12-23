@@ -3,7 +3,7 @@ using Iiroki.TimeSeriesPlatform.Extensions;
 using Iiroki.TimeSeriesPlatform.Middleware;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 // Configuration:
 var builder = WebApplication.CreateBuilder(args);
@@ -13,39 +13,16 @@ builder
     .AddAuthentication()
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
 
-builder.Services.AddTspDbContext();
+builder.Services.AddTspDbContext(builder.Configuration);
 builder.Services.AddSingleton<IApiKeyService, ApiKeyService>();
 builder.Services.AddScoped<IMetadataService, MetadataService>();
 
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen(opt =>
+builder.Services.AddSwaggerDoc();
+builder.Services.AddMvcCore(opt =>
 {
-    var id = "API key";
-
-    opt.AddSecurityDefinition(
-        id,
-        new OpenApiSecurityScheme
-        {
-            Type = SecuritySchemeType.ApiKey,
-            In = ParameterLocation.Header,
-            Scheme = Config.ApiKey,
-            Name = ApiKeyAuthenticationHandler.ApiKeyHeader
-            // Description = $"Header: {ApiKeyAuthenticationHandler.ApiKeyHeader}"
-        }
-    );
-
-    opt.AddSecurityRequirement(
-        new OpenApiSecurityRequirement
-        {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference{ Type = ReferenceType.SecurityScheme, Id = id }
-                },
-                new List<string>()
-            }
-        }
-    );
+    opt.Filters.Add(new ConsumesAttribute("application/json"));
+    opt.Filters.Add(new ProducesAttribute("application/json"));
 });
 
 // Request pipeline:

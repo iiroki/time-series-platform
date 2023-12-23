@@ -22,8 +22,8 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Slug = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -38,7 +38,7 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Slug = table.Column<string>(type: "text", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: false)
+                    Name = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -81,23 +81,17 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Measurement_IntegrationId",
+                name: "IX_Measurement_IntegrationId_TagId_Timestamp",
                 schema: "tsp",
                 table: "Measurement",
-                column: "IntegrationId");
+                columns: new[] { "IntegrationId", "TagId", "Timestamp" },
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Measurement_TagId",
                 schema: "tsp",
                 table: "Measurement",
                 column: "TagId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Measurement_Timestamp_IntegrationId_TagId",
-                schema: "tsp",
-                table: "Measurement",
-                columns: new[] { "Timestamp", "IntegrationId", "TagId" },
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tag_Slug",

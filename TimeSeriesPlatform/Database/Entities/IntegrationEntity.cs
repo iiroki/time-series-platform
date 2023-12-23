@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 
 /// <summary>
-/// Integration table schema.
+/// Integration schema.
 /// </summary>
 [PrimaryKey(nameof(Id))]
 [Index(nameof(Slug), IsUnique = true)]

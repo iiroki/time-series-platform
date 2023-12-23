@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 
 /// <summary>
-/// Measurement hypertable schema.
+/// Measurement schema (hypertable).
 /// </summary>
 [Keyless]
-[Index(nameof(Timestamp), nameof(IntegrationId), nameof(TagId), IsUnique = true)]
+[Index(nameof(IntegrationId), nameof(TagId), nameof(Timestamp), IsUnique = true)]
 public class MeasurementEntity
 {
     public long TagId { get; set; }

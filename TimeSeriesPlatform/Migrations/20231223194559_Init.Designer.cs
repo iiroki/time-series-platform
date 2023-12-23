@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Iiroki.TimeSeriesPlatform.Migrations
 {
     [DbContext(typeof(TspDbContext))]
-    [Migration("20231203094652_Init")]
+    [Migration("20231223194559_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -64,11 +64,9 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                     b.Property<double>("Value")
                         .HasColumnType("double precision");
 
-                    b.HasIndex("IntegrationId");
-
                     b.HasIndex("TagId");
 
-                    b.HasIndex("Timestamp", "IntegrationId", "TagId")
+                    b.HasIndex("IntegrationId", "TagId", "Timestamp")
                         .IsUnique();
 
                     b.ToTable("Measurement", "tsp");
@@ -83,7 +81,6 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Slug")
