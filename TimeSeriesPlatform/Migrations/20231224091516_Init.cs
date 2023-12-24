@@ -50,10 +50,11 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                 schema: "tsp",
                 columns: table => new
                 {
+                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Value = table.Column<double>(type: "double precision", nullable: false),
                     TagId = table.Column<long>(type: "bigint", nullable: false),
                     IntegrationId = table.Column<long>(type: "bigint", nullable: false),
-                    Value = table.Column<double>(type: "double precision", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    UpdateTimestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {

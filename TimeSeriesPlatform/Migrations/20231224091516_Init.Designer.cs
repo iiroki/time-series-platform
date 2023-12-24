@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Iiroki.TimeSeriesPlatform.Migrations
 {
     [DbContext(typeof(TspDbContext))]
-    [Migration("20231223194559_Init")]
+    [Migration("20231224091516_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -59,6 +59,9 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("UpdateTimestamp")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<double>("Value")

@@ -22,7 +22,6 @@ public class MetadataService : IMetadataService
     public async Task<IntegrationEntity> CreateIntegrationAsync(string name, string slug, CancellationToken ct)
     {
         var integration = new IntegrationEntity { Name = name, Slug = slug };
-
         _dbContext.Integration.Add(integration);
         try
         {

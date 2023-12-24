@@ -58,6 +58,9 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTime>("UpdateTimestamp")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<double>("Value")
                         .HasColumnType("double precision");
 

@@ -18,6 +18,8 @@ public class MeasurementEntity
 
     public long IntegrationId { get; set; }
 
+    public DateTime UpdateTimestamp { get; set; }
+
     // Navigations:
 
     [ForeignKey(nameof(TagId))]
