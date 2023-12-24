@@ -20,6 +20,10 @@ See [**"Tech Stack"**](#tech-stack) and [**"Features"**](#features) below for mo
     - [Npgsql](https://www.npgsql.org/) as the Postgres provider for .NET.
 - **Notifications:**
     - (TODO) WebSocket for pushing changes to clients.
+- **Testing:**
+    - [NUnit](https://nunit.org/) as the test framework
+    - [NSubstitute](https://nsubstitute.github.io/) for mocking
+    - [Testcontainers for .NET](https://dotnet.testcontainers.org/) for testing against real dependencies.
 
 # Features
 
