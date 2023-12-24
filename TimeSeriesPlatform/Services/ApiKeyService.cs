@@ -10,6 +10,7 @@ public class ApiKeyService : IApiKeyService
 
     public ApiKeyService(IConfiguration config)
     {
+        // Try to parse the integration API keys from the raw keys...
         var integrationApiKeyPrefix = $"{Config.ApiKeyIntegration}__";
         var integrationApiKeys = config
             .AsEnumerable()
@@ -17,6 +18,7 @@ public class ApiKeyService : IApiKeyService
             .Select(c => KeyValuePair.Create(c.Key[integrationApiKeyPrefix.Length..], c.Value))
             .ToList();
 
+        // ...if no integrations weren't found, try to read them from the configuration section.
         if (integrationApiKeys.Count == 0)
         {
             integrationApiKeys = config
@@ -26,6 +28,7 @@ public class ApiKeyService : IApiKeyService
                 .ToList();
         }
 
+        // Add the integration API keys to a dictionary.
         foreach (var apiKey in integrationApiKeys)
         {
             if (!string.IsNullOrWhiteSpace(apiKey.Value))
