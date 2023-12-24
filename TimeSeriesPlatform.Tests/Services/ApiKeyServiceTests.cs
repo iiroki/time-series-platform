@@ -89,8 +89,6 @@ public class ApiKeyServiceTests
             }
         }
 
-        var builder = new ConfigurationBuilder();
-        builder.AddEnvironmentVariables();
-        return builder.Build();
+        return new ConfigurationBuilder().AddEnvironmentVariables().Build();
     }
 }

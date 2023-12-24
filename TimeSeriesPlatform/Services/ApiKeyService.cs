@@ -11,12 +11,20 @@ public class ApiKeyService : IApiKeyService
     public ApiKeyService(IConfiguration config)
     {
         var integrationApiKeyPrefix = $"{Config.ApiKeyIntegration}__";
-        //var integrationApiKeys = config.GetSection(Config.ApiKeyIntegration).GetChildren().ToList();
         var integrationApiKeys = config
             .AsEnumerable()
             .Where(c => c.Key.StartsWith(integrationApiKeyPrefix))
             .Select(c => KeyValuePair.Create(c.Key[integrationApiKeyPrefix.Length..], c.Value))
             .ToList();
+
+        if (integrationApiKeys.Count == 0)
+        {
+            integrationApiKeys = config
+                .GetSection(Config.ApiKeyIntegration)
+                .GetChildren()
+                .Select(c => KeyValuePair.Create(c.Key, c.Value))
+                .ToList();
+        }
 
         foreach (var apiKey in integrationApiKeys)
         {

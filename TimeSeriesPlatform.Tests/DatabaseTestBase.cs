@@ -38,8 +38,8 @@ public class DatabaseTestBase
         }
     }
 
-    [OneTimeTearDown]
-    public async Task DestroyDbContainerAsync() => await DbContainer.DisposeAsync();
+    // [OneTimeTearDown]
+    // public async Task StopDbContainerAsync() => await DbContainer.StopAsync();
 
     [SetUp]
     public async Task InitDbAsync()
