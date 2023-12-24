@@ -1,7 +1,7 @@
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.Extensions.Configuration;
 
-namespace Iiroki.TimeSeriesPlatform.Tests.Servces;
+namespace Iiroki.TimeSeriesPlatform.Tests.Services;
 
 public class ApiKeyServiceTests
 {

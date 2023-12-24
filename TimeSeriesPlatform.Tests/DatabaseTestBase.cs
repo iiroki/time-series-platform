@@ -2,8 +2,9 @@ using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using Iiroki.TimeSeriesPlatform.Database;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
-namespace Iiroki.TimeSeriesPlatform.Tests.Servces;
+namespace Iiroki.TimeSeriesPlatform.Tests;
 
 public class DatabaseTestBase
 {
@@ -40,18 +41,23 @@ public class DatabaseTestBase
     [OneTimeTearDown]
     public async Task DestroyDbContainerAsync() => await DbContainer.DisposeAsync();
 
-    protected static TspDbContext CreateDbContext()
-    {
-        var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-
-        return TspDbContext.Create(config);
-    }
-
     [SetUp]
     public async Task InitDbAsync()
     {
         var dbContext = CreateDbContext();
         await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
+    }
+
+    protected static TspDbContext CreateDbContext()
+    {
+        var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+        return TspDbContext.Create(config);
+    }
+
+    protected static NpgsqlDataSource CreateDbSource()
+    {
+        var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+        return TspDbContext.CreateSource(config);
     }
 }

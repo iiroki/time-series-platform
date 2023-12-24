@@ -61,7 +61,7 @@ but the data ingestion implementation might be extended in future...
 Data ingestion requires the sender to include an integration API key with the data,
 which is then used to identify the data source.
 
-See the [measurement endpoint](#measurement) for instructions.
+See [**`/measurement`**](#measurement) for instructions.
 
 Measurements are stored in Timescale hypertables, which have references to the metadata tables.
 

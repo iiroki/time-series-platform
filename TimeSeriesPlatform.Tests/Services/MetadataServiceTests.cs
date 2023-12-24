@@ -4,14 +4,14 @@ using Iiroki.TimeSeriesPlatform.Services.Exceptions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 
-namespace Iiroki.TimeSeriesPlatform.Tests.Servces;
+namespace Iiroki.TimeSeriesPlatform.Tests.Services;
 
 public class MetadataServiceTests : DatabaseTestBase
 {
     private IMetadataService _metadataService = null!;
 
     [SetUp]
-    public void SetupServiceAsync()
+    public void SetupAsync()
     {
         _metadataService = new MetadataService(CreateDbContext(), Substitute.For<ILogger<MetadataService>>());
     }

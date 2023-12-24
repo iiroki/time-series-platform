@@ -55,10 +55,7 @@ public static class MeasurementQueries
         """;
 
     private static string CreateValueList(int count) =>
-        string.Join(
-            ", ",
-            Enumerable.Range(1, count).Select(i => $"({CreateValue(i)})")
-        );
+        string.Join(", ", Enumerable.Range(1, count).Select(i => $"({CreateValue(i)})"));
 
     private static string CreateValue(int index) =>
         string.Join(

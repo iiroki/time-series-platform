@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Iiroki.TimeSeriesPlatform.Database.Queries;
 using Iiroki.TimeSeriesPlatform.Dto;
 using Iiroki.TimeSeriesPlatform.Extensions;
+using Iiroki.TimeSeriesPlatform.Services.Exceptions;
 using Npgsql;
 
 namespace Iiroki.TimeSeriesPlatform.Services;
@@ -54,7 +55,14 @@ public class MeasurementService : IMeasurementService
             cmd.Parameters.Add(new() { Value = m.Tag });
             cmd.Parameters.Add(new() { Value = DateTime.UtcNow });
             cmd.Parameters.AddRange(@params);
-            await cmd.ExecuteNonQueryAsync(ct);
+            try
+            {
+                await cmd.ExecuteNonQueryAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                throw new MeasurementServiceException("Could not save measurements", ex);
+            }
         }
 
         await trans.CommitAsync(ct);
