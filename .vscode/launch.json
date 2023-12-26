@@ -15,13 +15,11 @@
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
+                "uriFormat": "https://localhost:%s/swagger",
                 "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
             }
         }
     ]
