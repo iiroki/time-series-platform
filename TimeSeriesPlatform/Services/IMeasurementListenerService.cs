@@ -4,9 +4,7 @@ namespace Iiroki.TimeSeriesPlatform.Services;
 
 public interface IMeasurementListenerService
 {
-    public delegate void OnMeasurement(long tagId, double value);
+    public Task RunAsync(CancellationToken ct);
 
-    public Task StartAsync(CancellationToken ct);
-
-    public IDisposable RegisterListener(Action<MeasurementChange> listener);
+    public void RegisterListener(Action<MeasurementChange> listener);
 }

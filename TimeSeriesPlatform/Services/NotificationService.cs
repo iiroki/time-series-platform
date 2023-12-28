@@ -19,13 +19,12 @@ public class NotificationService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        var recipe = _measurementListenerService.RegisterListener(OnMeasurementChange);
-        await _measurementListenerService.StartAsync(ct);
-        recipe.Dispose();
+        _measurementListenerService.RegisterListener(OnMeasurementChange);
+        await _measurementListenerService.RunAsync(ct);
     }
 
     private void OnMeasurementChange(MeasurementChange change)
     {
-        _logger.LogInformation("Measurement changed: {C}", JsonSerializer.Serialize(change));
+        _logger.LogInformation("Received change: {C}", JsonSerializer.Serialize(change));
     }
 }

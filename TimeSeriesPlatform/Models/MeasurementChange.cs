@@ -10,7 +10,7 @@ public record MeasurementChange
 
     public required double Value { get; init; }
 
-    public class Builder
+    internal class Builder
     {
         public long? IntegrationId { get; set; }
         public long? TagId { get; set; }

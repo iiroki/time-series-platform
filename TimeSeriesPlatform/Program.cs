@@ -17,7 +17,7 @@ builder.Services.AddTspDatabase(builder.Configuration);
 builder.Services.AddSingleton<IApiKeyService, ApiKeyService>();
 builder.Services.AddSingleton<IMeasurementService, MeasurementService>();
 builder.Services.AddScoped<IMetadataService, MetadataService>();
-builder.Services.AddTransient<IMeasurementListenerService, MeasurementListenerService>();
+builder.Services.AddSingleton<IMeasurementListenerService, MeasurementListenerService>();
 builder.Services.AddHostedService<NotificationService>();
 
 builder.Services.AddControllers();

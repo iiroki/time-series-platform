@@ -11,7 +11,6 @@ namespace Iiroki.TimeSeriesPlatform.Services;
 
 public class MeasurementListenerService : IMeasurementListenerService
 {
-    private static readonly string Id = Guid.NewGuid().ToString().Replace('-', '_');
     private readonly string PubName = $"_pub_measurement_listener";
     private readonly string SlotName = $"_slot_measurement_listener";
 
@@ -19,7 +18,8 @@ public class MeasurementListenerService : IMeasurementListenerService
     private readonly NpgsqlDataSource _dbSource;
     private readonly ILogger<MeasurementListenerService> _logger;
 
-    private readonly Dictionary<Guid, Action<MeasurementChange>> _listeners = [];
+    private Action<MeasurementChange>? _listener;
+    private bool _isRunning;
 
     public MeasurementListenerService(
         IConfiguration config,
@@ -32,8 +32,20 @@ public class MeasurementListenerService : IMeasurementListenerService
         _logger = logger;
     }
 
-    public async Task StartAsync(CancellationToken ct)
+    public async Task RunAsync(CancellationToken ct)
     {
+        if (_listener == null)
+        {
+            throw new InvalidOperationException("Listener is not registered");
+        }
+
+        if (_isRunning)
+        {
+            throw new InvalidOperationException("Service is already running");
+        }
+
+        _isRunning = true;
+
         // Reference: https://www.npgsql.org/doc/replication.html#logical-replication
 
         await using var pubRegistration = await CreatePubAsync(ct);
@@ -43,9 +55,8 @@ public class MeasurementListenerService : IMeasurementListenerService
         await using var dbConnection = new LogicalReplicationConnection(connection);
         var slot = new PgOutputReplicationSlot(SlotName);
 
-        await dbConnection.Open(ct);
-
         _logger.LogInformation("Starting Postgres replication with 'pgoutput'...");
+        await dbConnection.Open(ct);
         await foreach (
             var msg in dbConnection.StartReplication(
                 slot,
@@ -64,24 +75,20 @@ public class MeasurementListenerService : IMeasurementListenerService
                 change = await update.ToMeasurementChange();
             }
 
-            dbConnection.SetReplicationStatus(msg.WalEnd);
             if (change != null)
             {
-                foreach (var l in _listeners)
-                {
-                    l.Value(change);
-                }
+                _listener(change); // Should the changes be batches with "BeginMessage" and "CommitMessage"?
             }
+
+            dbConnection.SetReplicationStatus(msg.WalEnd);
         }
 
         _logger.LogDebug("Postgres replication finished");
     }
 
-    IDisposable IMeasurementListenerService.RegisterListener(Action<MeasurementChange> listener)
+    public void RegisterListener(Action<MeasurementChange> listener)
     {
-        var listenerId = Guid.NewGuid();
-        _listeners.Add(listenerId, listener);
-        return new Registration(() => _listeners.Remove(listenerId));
+        _listener = listener;
     }
 
     private async Task<IAsyncDisposable> CreatePubAsync(CancellationToken ct)
@@ -132,8 +139,8 @@ public class MeasurementListenerService : IMeasurementListenerService
         _logger.LogDebug("Created Postgres replication slot: {P}", SlotName);
         return new RegistrationAsync(async () =>
         {
-            await using var cmd = _dbSource.CreateCommand($"SELECT pg_drop_replication_slot('{SlotName}')");
-            await cmd.ExecuteNonQueryAsync(ct);
+            await using var dropCmd = _dbSource.CreateCommand($"SELECT pg_drop_replication_slot('{SlotName}')");
+            await dropCmd.ExecuteNonQueryAsync(ct);
             _logger.LogDebug("Deleted Postgres replication slot: {P}", SlotName);
         });
     }
