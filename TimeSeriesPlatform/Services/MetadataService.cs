@@ -35,13 +35,22 @@ public class MetadataService : IMetadataService
         }
     }
 
-    public Task<List<TagEntity>> GetTagsAsync(CancellationToken ct)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<TagEntity>> GetTagsAsync(CancellationToken ct) =>
+        await _dbContext.Tag.AsNoTracking().ToListAsync(ct);
 
-    public Task<TagEntity> CreateTagAsync(string todo, CancellationToken ct)
+    public async Task<TagEntity> CreateTagAsync(string name, string slug, CancellationToken ct)
     {
-        throw new NotImplementedException();
+        var tag = new TagEntity { Name = name, Slug = slug };
+        _dbContext.Tag.Add(tag);
+        try
+        {
+            await _dbContext.SaveChangesAsync(ct);
+            _logger.LogInformation("Created tag: {T}", tag);
+            return tag;
+        }
+        catch (Exception ex)
+        {
+            throw new MetadataServiceException($"Could not create tag: {tag}", ex);
+        }
     }
 }
