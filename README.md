@@ -24,6 +24,8 @@ See [**"Tech Stack"**](#tech-stack) and [**"Features"**](#features) below for mo
     - [NUnit](https://nunit.org/) as the test framework
     - [NSubstitute](https://nsubstitute.github.io/) for mocking
     - [Testcontainers for .NET](https://dotnet.testcontainers.org/) for testing against real dependencies.
+- **DevOps:**
+    - CI/CD: GitHub Actions
 
 # Features
 
