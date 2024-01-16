@@ -15,7 +15,5 @@ public record MeasurementDto
         public required double Value { get; init; }
 
         public required DateTime Timestamp { get; init; }
-
-        public DateTime? VersionTimestamp { get; init; }
     }
 }

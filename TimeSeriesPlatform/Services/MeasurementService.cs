@@ -53,7 +53,7 @@ public class MeasurementService : IMeasurementService
             cmd.Parameters.Add(new() { Value = integrationSlug });
             cmd.Parameters.Add(new() { Value = m.Tag });
             cmd.Parameters.Add(new() { Value = !string.IsNullOrWhiteSpace(m.Location) ? m.Location : DBNull.Value });
-            cmd.Parameters.Add(new() { Value = DateTime.UtcNow }); // TODO: From the input data
+            cmd.Parameters.Add(new() { Value = m.VersionTimestamp ?? DateTime.UtcNow });
             cmd.Parameters.AddRange(@params);
             try
             {

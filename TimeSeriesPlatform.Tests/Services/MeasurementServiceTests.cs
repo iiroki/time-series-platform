@@ -107,10 +107,35 @@ public class MeasurementServiceTests : DatabaseTestBase
     }
 
     [Test]
-    [Ignore("Feature not yet implemented")]
-    public Task MeasurementService_SaveMeasurements_Update_VersionTimestamp_Ok()
+    public async Task MeasurementService_SaveMeasurements_Update_VersionTimestamp_Ok()
     {
-        return Task.CompletedTask;
+        var now = DateTime.UtcNow;
+        var tag = TestTags.First();
+        var measurements = new List<MeasurementDto>
+        {
+            new()
+            {
+                Tag = tag,
+                Data = [new() { Timestamp = now.AddMinutes(-2), Value = 123.45 }],
+                VersionTimestamp = now.AddSeconds(-1)
+            }
+        };
+
+        var ignoredMeasurements = new List<MeasurementDto>
+        {
+            new()
+            {
+                Tag = tag,
+                Data = [new() { Timestamp = measurements.First().Data.First().Timestamp, Value = 987.65 }],
+                VersionTimestamp = measurements.First().VersionTimestamp?.AddSeconds(-1) // Earlier than the initial!
+            }
+        };
+
+        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration, CancellationToken.None);
+        await _measurementService.SaveMeasurementsAsync(ignoredMeasurements, TestIntegration, CancellationToken.None);
+
+        var result = await GetResultAsync();
+        AssertMeasurements(measurements, result, TestIntegration);
     }
 
     private static async Task<List<MeasurementEntity>> GetResultAsync() =>
