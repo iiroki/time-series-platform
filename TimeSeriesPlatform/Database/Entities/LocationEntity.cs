@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 
 /// <summary>
-/// Integration schema.
+/// Location schema.
 /// </summary>
 [PrimaryKey(nameof(Id))]
 [Index(nameof(Slug), IsUnique = true)]
-public class IntegrationEntity
+public class LocationEntity
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }
@@ -18,9 +18,15 @@ public class IntegrationEntity
 
     public string Slug { get; set; } = default!;
 
-    // TODO: Integration capabilities?
+    public LocationType? Type { get; set; }
 
-    public DateTime VersionTimestamp { get; set; }
+    // TODO: Coordinates?
 
     public override string ToString() => this.Stringify();
+}
+
+public enum LocationType
+{
+    Physical,
+    Virtual
 }

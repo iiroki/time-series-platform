@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Iiroki.TimeSeriesPlatform.Migrations
 {
     [DbContext(typeof(TspDbContext))]
-    [Migration("20231224091516_Init")]
-    partial class Init
+    [Migration("20240116184123_CreateMeasurementHypertable")]
+    partial class CreateMeasurementHypertable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,6 +42,9 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("VersionTimestamp")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Slug")
@@ -50,9 +53,39 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                     b.ToTable("Integration", "tsp");
                 });
 
+            modelBuilder.Entity("Iiroki.TimeSeriesPlatform.Database.Entities.LocationEntity", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int?>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
+                    b.ToTable("LocationEntity", "tsp");
+                });
+
             modelBuilder.Entity("Iiroki.TimeSeriesPlatform.Database.Entities.MeasurementEntity", b =>
                 {
                     b.Property<long>("IntegrationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("LocationId")
                         .HasColumnType("bigint");
 
                     b.Property<long>("TagId")
@@ -61,11 +94,13 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("UpdateTimestamp")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<double>("Value")
                         .HasColumnType("double precision");
+
+                    b.Property<DateTime>("VersionTimestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasIndex("LocationId");
 
                     b.HasIndex("TagId");
 
@@ -90,6 +125,9 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("VersionTimestamp")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
                     b.HasIndex("Slug")
@@ -106,6 +144,10 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("Iiroki.TimeSeriesPlatform.Database.Entities.LocationEntity", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationId");
+
                     b.HasOne("Iiroki.TimeSeriesPlatform.Database.Entities.TagEntity", "Tag")
                         .WithMany()
                         .HasForeignKey("TagId")
@@ -113,6 +155,8 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         .IsRequired();
 
                     b.Navigation("Integration");
+
+                    b.Navigation("Location");
 
                     b.Navigation("Tag");
                 });

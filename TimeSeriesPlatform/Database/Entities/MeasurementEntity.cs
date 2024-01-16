@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using Iiroki.TimeSeriesPlatform.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Iiroki.TimeSeriesPlatform.Database.Entities;
@@ -18,7 +19,12 @@ public class MeasurementEntity
 
     public long IntegrationId { get; set; }
 
-    public DateTime UpdateTimestamp { get; set; }
+    /// <summary>
+    /// The measurement might be bound to a location, but does not have to.
+    /// </summary>
+    public long? LocationId { get; set; }
+
+    public DateTime VersionTimestamp { get; set; }
 
     // Navigations:
 
@@ -27,4 +33,9 @@ public class MeasurementEntity
 
     [ForeignKey(nameof(IntegrationId))]
     public IntegrationEntity Integration { get; set; } = default!;
+
+    [ForeignKey(nameof(LocationId))]
+    public LocationEntity? Location { get; set; }
+
+    public override string ToString() => this.Stringify();
 }

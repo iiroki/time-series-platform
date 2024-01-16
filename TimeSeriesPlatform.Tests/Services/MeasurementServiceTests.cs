@@ -42,14 +42,14 @@ public class MeasurementServiceTests : DatabaseTestBase
                     new MeasurementDto()
                     {
                         Tag = t,
-                        Data = new List<MeasurementDto.MeasurementDataDto>
-                        {
+                        Data =
+                        [
                             new() { Timestamp = now.AddMinutes(-5), Value = 1.23 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-4), Value = 2.34 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-3), Value = 3.45 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-2), Value = 4.56 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-1), Value = 5.67 + i * 10 },
-                        }
+                        ]
                     }
             )
             .ToList();
@@ -70,11 +70,11 @@ public class MeasurementServiceTests : DatabaseTestBase
             new()
             {
                 Tag = tag,
-                Data = new List<MeasurementDto.MeasurementDataDto>
-                {
+                Data =
+                [
                     new() { Timestamp = now.AddMinutes(-2), Value = 123.45 }, // <-- This value should be updated
                     new() { Timestamp = now.AddMinutes(-1), Value = 543.21 }
-                }
+                ]
             }
         };
 
@@ -96,7 +96,7 @@ public class MeasurementServiceTests : DatabaseTestBase
         var result = await GetResultAsync();
         var expected = new List<MeasurementDto>
         {
-            new() { Tag = tag, Data = new[] { measurements.First().Data.Last() } },
+            new() { Tag = tag, Data = [measurements.First().Data.Last()] },
             new() { Tag = tag, Data = updatedMeasurements.First().Data }
         };
 
@@ -105,7 +105,7 @@ public class MeasurementServiceTests : DatabaseTestBase
 
     [Test]
     [Ignore("Feature not yet implemented")]
-    public Task MeasurementService_SaveMeasurements_Update_UpdateTimestamp_Ok()
+    public Task MeasurementService_SaveMeasurements_Update_VersionTimestamp_Ok()
     {
         return Task.CompletedTask;
     }
@@ -122,7 +122,7 @@ public class MeasurementServiceTests : DatabaseTestBase
         IList<MeasurementDto> expected,
         IList<MeasurementEntity> actual,
         string integration,
-        DateTime? updateTimestamp = null
+        DateTime? versionTimestamp = null
     )
     {
         var expectedFlattened = expected
@@ -144,9 +144,9 @@ public class MeasurementServiceTests : DatabaseTestBase
                 Assert.That(a.Tag.Slug, Is.EqualTo(e.Tag));
                 Assert.That(a.Timestamp, Is.EqualTo(data.Timestamp).Within(TimeSpan.FromMilliseconds(0)));
                 Assert.That(a.Value, Is.EqualTo(data.Value));
-                if (updateTimestamp.HasValue)
+                if (versionTimestamp.HasValue)
                 {
-                    Assert.That(a.UpdateTimestamp, Is.EqualTo(updateTimestamp.Value));
+                    Assert.That(a.VersionTimestamp, Is.EqualTo(versionTimestamp.Value));
                 }
             }
         });

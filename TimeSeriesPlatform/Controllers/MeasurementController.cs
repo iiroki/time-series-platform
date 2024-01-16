@@ -10,14 +10,9 @@ namespace Iiroki.TimeSeriesPlatform.Controllers;
 [ApiController]
 [Route("measurement")]
 [Authorize]
-public class MeasurementController : ControllerBase
+public class MeasurementController(IMeasurementService measurementService) : ControllerBase
 {
-    private readonly IMeasurementService _measurementService;
-
-    public MeasurementController(IMeasurementService measurementService)
-    {
-        _measurementService = measurementService;
-    }
+    private readonly IMeasurementService _measurementService = measurementService;
 
     [HttpPost]
     [Authorize(Roles = AuthenticationKind.Integration)]

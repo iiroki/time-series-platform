@@ -16,8 +16,9 @@ See [**"Tech Stack"**](#tech-stack) and [**"Features"**](#features) below for mo
     - ASP.NET Core Web API
 - **Database:**
     - [Timescale](https://www.timescale.com/) for time series data using Postgres
-    - [EF Core](https://learn.microsoft.com/en-us/ef/core/) for schema definition and migrations
+    - [EF Core](https://learn.microsoft.com/en-us/ef/core/) for schema definitions and migrations
     - [Npgsql](https://www.npgsql.org/) as the Postgres provider for .NET.
+        - _Npgsql is also used for logical replication and near real-time change data capture (CDC)!_
 - **Notifications:**
     - (TODO) WebSocket for pushing changes to clients.
 - **Testing:**

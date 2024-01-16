@@ -14,7 +14,7 @@ public static class MeasurementQueries
     /// <b>Params:</b><br/>
     /// 1. Integration slug<br/>
     /// 2. Tag slug<br/>
-    /// 3. Update timestamp <br/>
+    /// 3. Version timestamp <br/>
     /// 4 + (2n - 1). Timestamp<br/>
     /// 5 + (2n - 1). Value<br/>
     /// </summary>
@@ -36,7 +36,7 @@ public static class MeasurementQueries
         INSERT INTO {MeasurementTable} AS m (
             "{nameof(MeasurementEntity.IntegrationId)}",
             "{nameof(MeasurementEntity.TagId)}",
-            "{nameof(MeasurementEntity.UpdateTimestamp)}",
+            "{nameof(MeasurementEntity.VersionTimestamp)}",
             "{nameof(MeasurementEntity.Timestamp)}",
             "{nameof(MeasurementEntity.Value)}"
         )
@@ -50,8 +50,8 @@ public static class MeasurementQueries
         DO
             UPDATE SET
                 "{nameof(MeasurementEntity.Value)}" = EXCLUDED."{nameof(MeasurementEntity.Value)}",
-                "{nameof(MeasurementEntity.UpdateTimestamp)}" = $3
-            WHERE m."{nameof(MeasurementEntity.UpdateTimestamp)}" < $3;
+                "{nameof(MeasurementEntity.VersionTimestamp)}" = $3
+            WHERE m."{nameof(MeasurementEntity.VersionTimestamp)}" < $3;
         """;
 
     private static string CreateValueList(int count) =>
