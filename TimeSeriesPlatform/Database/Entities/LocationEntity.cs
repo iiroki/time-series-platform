@@ -20,7 +20,9 @@ public class LocationEntity
 
     public LocationType? Type { get; set; }
 
-    // TODO: Coordinates?
+    // TODO: Coordinates if a physical location?
+
+    public DateTime VersionTimestamp { get; set; }
 
     public override string ToString() => this.Stringify();
 }

@@ -66,15 +66,18 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("Type")
-                        .HasColumnType("integer");
+                    b.Property<short?>("Type")
+                        .HasColumnType("smallint");
+
+                    b.Property<DateTime>("VersionTimestamp")
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Slug")
                         .IsUnique();
 
-                    b.ToTable("LocationEntity", "tsp");
+                    b.ToTable("Location", "tsp");
                 });
 
             modelBuilder.Entity("Iiroki.TimeSeriesPlatform.Database.Entities.MeasurementEntity", b =>
@@ -101,8 +104,10 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
 
                     b.HasIndex("TagId");
 
-                    b.HasIndex("IntegrationId", "TagId", "Timestamp")
+                    b.HasIndex("IntegrationId", "TagId", "LocationId", "Timestamp")
                         .IsUnique();
+
+                    NpgsqlIndexBuilderExtensions.AreNullsDistinct(b.HasIndex("IntegrationId", "TagId", "LocationId", "Timestamp"), false);
 
                     b.ToTable("Measurement", "tsp");
                 });

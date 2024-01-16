@@ -9,11 +9,12 @@ namespace Iiroki.TimeSeriesPlatform.Tests.Services;
 
 public class MeasurementServiceTests : DatabaseTestBase
 {
-    private const string TestIntegration = "test-integration";
     private const string TestTagPrefix = "test-tag";
+    private const string TestLocation = "test-location";
+    private const string TestIntegration = "test-integration";
     private static readonly string[] TestTags = Enumerable.Range(1, 5).Select(i => $"{TestTagPrefix}_{i}").ToArray();
 
-    private IMeasurementService _measurementService = null!;
+    private MeasurementService _measurementService = null!;
 
     [SetUp]
     public async Task SetupAsync()
@@ -29,6 +30,10 @@ public class MeasurementServiceTests : DatabaseTestBase
             .Integration
             .Add(new IntegrationEntity { Name = $"{nameof(MeasurementService)} Integration", Slug = TestIntegration });
 
+        dbContext
+            .Location
+            .Add(new LocationEntity { Name = $"{nameof(MeasurementService)} Location", Slug = TestLocation });
+
         await dbContext.SaveChangesAsync();
     }
 
@@ -42,6 +47,7 @@ public class MeasurementServiceTests : DatabaseTestBase
                     new MeasurementDto()
                     {
                         Tag = t,
+                        Location = i % 2 == 0 ? TestLocation : null,
                         Data =
                         [
                             new() { Timestamp = now.AddMinutes(-5), Value = 1.23 + i * 10 },
@@ -83,10 +89,7 @@ public class MeasurementServiceTests : DatabaseTestBase
             new()
             {
                 Tag = tag,
-                Data = new List<MeasurementDto.MeasurementDataDto>
-                {
-                    new() { Timestamp = measurements.First().Data.First().Timestamp, Value = 987.65 }
-                }
+                Data = [new() { Timestamp = measurements.First().Data.First().Timestamp, Value = 987.65 }]
             }
         };
 
@@ -116,6 +119,7 @@ public class MeasurementServiceTests : DatabaseTestBase
             .AsNoTracking()
             .Include(m => m.Tag)
             .Include(m => m.Integration)
+            .Include(m => m.Location)
             .ToListAsync();
 
     private static void AssertMeasurements(
@@ -126,7 +130,18 @@ public class MeasurementServiceTests : DatabaseTestBase
     )
     {
         var expectedFlattened = expected
-            .SelectMany(e => e.Data.Select(d => new MeasurementDto { Tag = e.Tag, Data = new[] { d } }))
+            .SelectMany(
+                e =>
+                    e.Data.Select(
+                        d =>
+                            new MeasurementDto
+                            {
+                                Tag = e.Tag,
+                                Location = e.Location,
+                                Data = [d]
+                            }
+                    )
+            )
             .ToList();
 
         var expectedSorted = expectedFlattened.OrderBy(m => m.Tag).ThenBy(m => m.Data.First().Timestamp).ToList();
@@ -140,8 +155,9 @@ public class MeasurementServiceTests : DatabaseTestBase
                 var a = actualSorted[i];
                 var e = expectedSorted[i];
                 var data = e.Data.First();
-                Assert.That(a.Integration.Slug, Is.EqualTo(integration));
                 Assert.That(a.Tag.Slug, Is.EqualTo(e.Tag));
+                Assert.That(a.Integration.Slug, Is.EqualTo(integration));
+                Assert.That(a.Location?.Slug, Is.EqualTo(e.Location));
                 Assert.That(a.Timestamp, Is.EqualTo(data.Timestamp).Within(TimeSpan.FromMilliseconds(0)));
                 Assert.That(a.Value, Is.EqualTo(data.Value));
                 if (versionTimestamp.HasValue)

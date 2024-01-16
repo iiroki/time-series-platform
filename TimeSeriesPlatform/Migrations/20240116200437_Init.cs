@@ -32,7 +32,7 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "LocationEntity",
+                name: "Location",
                 schema: "tsp",
                 columns: table => new
                 {
@@ -40,11 +40,12 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Slug = table.Column<string>(type: "text", nullable: false),
-                    Type = table.Column<int>(type: "integer", nullable: true)
+                    Type = table.Column<short>(type: "smallint", nullable: true),
+                    VersionTimestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LocationEntity", x => x.Id);
+                    table.PrimaryKey("PK_Location", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -68,11 +69,11 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                 schema: "tsp",
                 columns: table => new
                 {
+                    IntegrationId = table.Column<long>(type: "bigint", nullable: false),
+                    TagId = table.Column<long>(type: "bigint", nullable: false),
+                    LocationId = table.Column<long>(type: "bigint", nullable: true),
                     Timestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     Value = table.Column<double>(type: "double precision", nullable: false),
-                    TagId = table.Column<long>(type: "bigint", nullable: false),
-                    IntegrationId = table.Column<long>(type: "bigint", nullable: false),
-                    LocationId = table.Column<long>(type: "bigint", nullable: true),
                     VersionTimestamp = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
@@ -85,10 +86,10 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Measurement_LocationEntity_LocationId",
+                        name: "FK_Measurement_Location_LocationId",
                         column: x => x.LocationId,
                         principalSchema: "tsp",
-                        principalTable: "LocationEntity",
+                        principalTable: "Location",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Measurement_Tag_TagId",
@@ -107,18 +108,19 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_LocationEntity_Slug",
+                name: "IX_Location_Slug",
                 schema: "tsp",
-                table: "LocationEntity",
+                table: "Location",
                 column: "Slug",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Measurement_IntegrationId_TagId_Timestamp",
+                name: "IX_Measurement_IntegrationId_TagId_LocationId_Timestamp",
                 schema: "tsp",
                 table: "Measurement",
-                columns: new[] { "IntegrationId", "TagId", "Timestamp" },
-                unique: true);
+                columns: new[] { "IntegrationId", "TagId", "LocationId", "Timestamp" },
+                unique: true)
+                .Annotation("Npgsql:NullsDistinct", false);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Measurement_LocationId",
@@ -152,7 +154,7 @@ namespace Iiroki.TimeSeriesPlatform.Migrations
                 schema: "tsp");
 
             migrationBuilder.DropTable(
-                name: "LocationEntity",
+                name: "Location",
                 schema: "tsp");
 
             migrationBuilder.DropTable(

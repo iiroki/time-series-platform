@@ -8,21 +8,21 @@ namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 /// Measurement schema (hypertable).
 /// </summary>
 [Keyless]
-[Index(nameof(IntegrationId), nameof(TagId), nameof(Timestamp), IsUnique = true)]
+// Unique index is defined in "TspDbContext"!
 public class MeasurementEntity
 {
-    public DateTime Timestamp { get; set; }
-
-    public double Value { get; set; }
+    public long IntegrationId { get; set; }
 
     public long TagId { get; set; }
-
-    public long IntegrationId { get; set; }
 
     /// <summary>
     /// The measurement might be bound to a location, but does not have to.
     /// </summary>
     public long? LocationId { get; set; }
+
+    public DateTime Timestamp { get; set; }
+
+    public double Value { get; set; }
 
     public DateTime VersionTimestamp { get; set; }
 

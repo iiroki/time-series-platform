@@ -36,7 +36,6 @@ public class MeasurementService : IMeasurementService
         await using var conn = await _dbSource.OpenConnectionAsync(ct);
         await using var trans = await conn.BeginTransactionAsync(ct);
 
-        // TODO: Save the measurements
         foreach (var m in measurements)
         {
             await using var cmd = new NpgsqlCommand(MeasurementQueries.Upsert(m.Data.Count), conn, trans);
@@ -53,7 +52,8 @@ public class MeasurementService : IMeasurementService
 
             cmd.Parameters.Add(new() { Value = integrationSlug });
             cmd.Parameters.Add(new() { Value = m.Tag });
-            cmd.Parameters.Add(new() { Value = DateTime.UtcNow });
+            cmd.Parameters.Add(new() { Value = !string.IsNullOrWhiteSpace(m.Location) ? m.Location : DBNull.Value });
+            cmd.Parameters.Add(new() { Value = DateTime.UtcNow }); // TODO: From the input data
             cmd.Parameters.AddRange(@params);
             try
             {

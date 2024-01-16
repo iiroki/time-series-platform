@@ -1,5 +1,7 @@
 using Iiroki.TimeSeriesPlatform.Database;
 using Iiroki.TimeSeriesPlatform.Middleware;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -7,6 +9,19 @@ namespace Iiroki.TimeSeriesPlatform.Extensions;
 
 public static class StartupExtensions
 {
+    /// <summary>
+    /// Adds the basic API key authentication to services.
+    /// </summary>
+    public static void AddApiKeyAuthentication(this IServiceCollection services) =>
+        services
+            .AddAuthentication()
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
+
+    /// <summary>
+    /// Adds Time Series Platform database to services:<br/>
+    /// - EF Core DB context<br/>
+    /// - Npgsql data source.
+    /// </summary>
     public static void AddTspDatabase(this IServiceCollection services, IConfiguration config)
     {
         var source = TspDbContext.CreateSource(config);
@@ -14,14 +29,17 @@ public static class StartupExtensions
         services.AddDbContext<TspDbContext>(opt => opt.UseNpgsql(source));
     }
 
-    public static void AddSwaggerDoc(this IServiceCollection services)
+    /// <summary>
+    /// Adds Swagger documentation to services.
+    /// </summary>
+    public static void AddSwaggerDocumentation(this IServiceCollection services)
     {
         services.AddSwaggerGen(opt =>
         {
-            var id = "API key";
+            opt.SupportNonNullableReferenceTypes();
 
             opt.AddSecurityDefinition(
-                id,
+                Config.ApiKey,
                 new OpenApiSecurityScheme
                 {
                     Type = SecuritySchemeType.ApiKey,
@@ -37,7 +55,7 @@ public static class StartupExtensions
                     {
                         new OpenApiSecurityScheme
                         {
-                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = id }
+                            Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = Config.ApiKey }
                         },
                         new List<string>()
                     }
@@ -45,4 +63,14 @@ public static class StartupExtensions
             );
         });
     }
+
+    /// <summary>
+    /// Adds "Content-Type: application/json" attributes to services.
+    /// </summary>
+    public static void AddJsonContentTypeAttributes(this IServiceCollection services) =>
+        services.AddMvcCore(opt =>
+        {
+            opt.Filters.Add(new ConsumesAttribute("application/json"));
+            opt.Filters.Add(new ProducesAttribute("application/json"));
+        });
 }
