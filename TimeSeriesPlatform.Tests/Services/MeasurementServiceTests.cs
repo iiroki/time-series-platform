@@ -9,18 +9,19 @@ namespace Iiroki.TimeSeriesPlatform.Tests.Services;
 
 public class MeasurementServiceTests : DatabaseTestBase
 {
-    private const string TestIntegration = "test-integration";
     private const string TestTagPrefix = "test-tag";
+    private const string TestLocation = "test-location";
+    private const string TestIntegration = "test-integration";
     private static readonly string[] TestTags = Enumerable.Range(1, 5).Select(i => $"{TestTagPrefix}_{i}").ToArray();
 
-    private IMeasurementService _measurementService = null!;
+    private MeasurementService _measurementService = null!;
 
     [SetUp]
     public async Task SetupAsync()
     {
         _measurementService = new MeasurementService(CreateDbSource(), Substitute.For<ILogger<MeasurementService>>());
 
-        var dbContext = CreateDbContext();
+        await using var dbContext = CreateDbContext();
         dbContext.AddRange(
             TestTags.Select((t, i) => new TagEntity { Name = $"{nameof(MeasurementService)} Tag {1 + i}", Slug = t })
         );
@@ -28,6 +29,10 @@ public class MeasurementServiceTests : DatabaseTestBase
         dbContext
             .Integration
             .Add(new IntegrationEntity { Name = $"{nameof(MeasurementService)} Integration", Slug = TestIntegration });
+
+        dbContext
+            .Location
+            .Add(new LocationEntity { Name = $"{nameof(MeasurementService)} Location", Slug = TestLocation });
 
         await dbContext.SaveChangesAsync();
     }
@@ -39,17 +44,18 @@ public class MeasurementServiceTests : DatabaseTestBase
         var measurements = TestTags
             .Select(
                 (t, i) =>
-                    new MeasurementDto()
+                    new MeasurementBatchDto()
                     {
                         Tag = t,
-                        Data = new List<MeasurementDto.MeasurementDataDto>
-                        {
+                        Location = i % 2 == 0 ? TestLocation : null,
+                        Data =
+                        [
                             new() { Timestamp = now.AddMinutes(-5), Value = 1.23 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-4), Value = 2.34 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-3), Value = 3.45 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-2), Value = 4.56 + i * 10 },
                             new() { Timestamp = now.AddMinutes(-1), Value = 5.67 + i * 10 },
-                        }
+                        ]
                     }
             )
             .ToList();
@@ -65,28 +71,25 @@ public class MeasurementServiceTests : DatabaseTestBase
     {
         var now = DateTime.UtcNow;
         var tag = TestTags.First();
-        var measurements = new List<MeasurementDto>
+        var measurements = new List<MeasurementBatchDto>
         {
             new()
             {
                 Tag = tag,
-                Data = new List<MeasurementDto.MeasurementDataDto>
-                {
+                Data =
+                [
                     new() { Timestamp = now.AddMinutes(-2), Value = 123.45 }, // <-- This value should be updated
                     new() { Timestamp = now.AddMinutes(-1), Value = 543.21 }
-                }
+                ]
             }
         };
 
-        var updatedMeasurements = new List<MeasurementDto>
+        var updatedMeasurements = new List<MeasurementBatchDto>
         {
             new()
             {
                 Tag = tag,
-                Data = new List<MeasurementDto.MeasurementDataDto>
-                {
-                    new() { Timestamp = measurements.First().Data.First().Timestamp, Value = 987.65 }
-                }
+                Data = [new() { Timestamp = measurements.First().Data.First().Timestamp, Value = 987.65 }]
             }
         };
 
@@ -94,9 +97,9 @@ public class MeasurementServiceTests : DatabaseTestBase
         await _measurementService.SaveMeasurementsAsync(updatedMeasurements, TestIntegration, CancellationToken.None);
 
         var result = await GetResultAsync();
-        var expected = new List<MeasurementDto>
+        var expected = new List<MeasurementBatchDto>
         {
-            new() { Tag = tag, Data = new[] { measurements.First().Data.Last() } },
+            new() { Tag = tag, Data = [measurements.First().Data.Last()] },
             new() { Tag = tag, Data = updatedMeasurements.First().Data }
         };
 
@@ -104,29 +107,66 @@ public class MeasurementServiceTests : DatabaseTestBase
     }
 
     [Test]
-    [Ignore("Feature not yet implemented")]
-    public Task MeasurementService_SaveMeasurements_Update_UpdateTimestamp_Ok()
+    public async Task MeasurementService_SaveMeasurements_Update_VersionTimestamp_Ok()
     {
-        return Task.CompletedTask;
+        var now = DateTime.UtcNow;
+        var tag = TestTags.First();
+        var measurements = new List<MeasurementBatchDto>
+        {
+            new()
+            {
+                Tag = tag,
+                Data = [new() { Timestamp = now.AddMinutes(-2), Value = 123.45 }],
+                VersionTimestamp = now.AddSeconds(-1)
+            }
+        };
+
+        var ignoredMeasurements = new List<MeasurementBatchDto>
+        {
+            new()
+            {
+                Tag = tag,
+                Data = [new() { Timestamp = measurements.First().Data.First().Timestamp, Value = 987.65 }],
+                VersionTimestamp = measurements.First().VersionTimestamp?.AddSeconds(-1) // Earlier than the initial!
+            }
+        };
+
+        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration, CancellationToken.None);
+        await _measurementService.SaveMeasurementsAsync(ignoredMeasurements, TestIntegration, CancellationToken.None);
+
+        var result = await GetResultAsync();
+        AssertMeasurements(measurements, result, TestIntegration);
     }
 
-    private static async Task<List<MeasurementEntity>> GetResultAsync() =>
+    private async Task<List<MeasurementEntity>> GetResultAsync() =>
         await CreateDbContext()
             .Measurement
             .AsNoTracking()
             .Include(m => m.Tag)
             .Include(m => m.Integration)
+            .Include(m => m.Location)
             .ToListAsync();
 
     private static void AssertMeasurements(
-        IList<MeasurementDto> expected,
+        IList<MeasurementBatchDto> expected,
         IList<MeasurementEntity> actual,
         string integration,
-        DateTime? updateTimestamp = null
+        DateTime? versionTimestamp = null
     )
     {
         var expectedFlattened = expected
-            .SelectMany(e => e.Data.Select(d => new MeasurementDto { Tag = e.Tag, Data = new[] { d } }))
+            .SelectMany(
+                e =>
+                    e.Data.Select(
+                        d =>
+                            new MeasurementBatchDto
+                            {
+                                Tag = e.Tag,
+                                Location = e.Location,
+                                Data = [d]
+                            }
+                    )
+            )
             .ToList();
 
         var expectedSorted = expectedFlattened.OrderBy(m => m.Tag).ThenBy(m => m.Data.First().Timestamp).ToList();
@@ -140,13 +180,14 @@ public class MeasurementServiceTests : DatabaseTestBase
                 var a = actualSorted[i];
                 var e = expectedSorted[i];
                 var data = e.Data.First();
-                Assert.That(a.Integration.Slug, Is.EqualTo(integration));
                 Assert.That(a.Tag.Slug, Is.EqualTo(e.Tag));
-                Assert.That(a.Timestamp, Is.EqualTo(data.Timestamp).Within(TimeSpan.FromMilliseconds(0)));
+                Assert.That(a.Integration.Slug, Is.EqualTo(integration));
+                Assert.That(a.Location?.Slug, Is.EqualTo(e.Location));
+                Assert.That(a.Timestamp, Is.EqualTo(data.Timestamp).Within(TimeSpan.FromMicroseconds(1)));
                 Assert.That(a.Value, Is.EqualTo(data.Value));
-                if (updateTimestamp.HasValue)
+                if (versionTimestamp.HasValue)
                 {
-                    Assert.That(a.UpdateTimestamp, Is.EqualTo(updateTimestamp.Value));
+                    Assert.That(a.VersionTimestamp, Is.EqualTo(versionTimestamp.Value));
                 }
             }
         });

@@ -1,8 +1,9 @@
 # Time Series Platfrom
 
-Time Series Platform, built with .NET and Timescale, is a simple web application to store and query time series data.
+Time Series Platform (TSP), built with .NET and Timescale, is a simple web application to work with time series data.
 
-The project is mainly done for learning purposes and the main thing about this project is to experiment with different technologies and see how they integrate with each other.
+The project is mainly done for learning purposes and the main thing about this project is to experiment with
+different technologies and see how they integrate with each other.
 
 Requirements for the project, as simple as they currently are, come from real-life scenarios,
 as the is also meant to be used in production (at least by me). 
@@ -16,8 +17,9 @@ See [**"Tech Stack"**](#tech-stack) and [**"Features"**](#features) below for mo
     - ASP.NET Core Web API
 - **Database:**
     - [Timescale](https://www.timescale.com/) for time series data using Postgres
-    - [EF Core](https://learn.microsoft.com/en-us/ef/core/) for schema definition and migrations
+    - [EF Core](https://learn.microsoft.com/en-us/ef/core/) for schema definitions and migrations
     - [Npgsql](https://www.npgsql.org/) as the Postgres provider for .NET.
+        - _Npgsql is also used for logical replication and near real-time change data capture (CDC)!_
 - **Notifications:**
     - (TODO) WebSocket for pushing changes to clients.
 - **Testing:**
@@ -27,7 +29,24 @@ See [**"Tech Stack"**](#tech-stack) and [**"Features"**](#features) below for mo
 - **DevOps:**
     - CI/CD: GitHub Actions
 
+# Concepts
+
+In order to work with time series data, Time Series Platform uses the following concepts:
+- _Integration:_ Data source that produces time series data
+    - Integrations should be manually configured in order to enable data ingestion!
+- _Tag:_ Measurement identifier, that are used to query the measurements.
+- _Location_: Measurements can also be bound to location, but do not have to.
+    - For example, a temperature tag can receive values from various location.
+    - Locations can be used to distinguish measurements (example: temperature) from the same tag and integration.
+- _Measurement_: The actual time series data of Time Series Platform, which contains numerical observations at various time intervals.
+
 # Features
+
+## API
+
+Time Series Platform provides an HTTP web API to work with the platform.
+
+See [**here**](./docs/api.md) for the API documentation.
 
 ## Authentication
 
@@ -46,16 +65,13 @@ Authentication is handled with API keys stored in the following environment vari
 
 ## Metadata Management
 
-Time Series Platform contains a small metadata layer on top of the actual time series data.
+Time Series Platform contains a small metadata layer on top of the actual time series data
+(see [**"Concepts"**](#concepts)).
 
-Time Series Platform metadata consists of two concepts:
-- _Integration:_ Time series data source
-    - Integrations should be manually configured to enable data ingestion.
-- _Tag:_ Measurement identifier
+By querying metadata from the API, users can get an overview of the time series data stored in the plaftorm,
+which can then be utilized to query the actual measurements.
 
-By querying metadata from the API, users can get an overview of the time series data stored in the plaftorm, which can then be utilized to query the actual measurements.
-
-Metadata is stored in regular Postgres tables.
+**Metadata is stored in regular Postgres tables.**
 
 ## Data Ingestion
 
@@ -69,7 +85,7 @@ which is then used to identify the data source.
 
 See [**`/measurement`**](#measurement) for instructions.
 
-Measurements are stored in Timescale hypertables, which have references to the metadata tables.
+**Measurements are stored in Timescale hypertables**, which have references to the metadata tables.
 
 ## Notifications
 
@@ -80,38 +96,3 @@ TODO
 Time Series Platform also contains a comprehensive OpenAPI documentation implemented with Swagger.
 
 As the authentication is as simple as it is, the Swagger page is also a handy tool to test the API.
-
-# API
-
-**API key header:** `X-API-KEY`
-
-## `/integration`
-
-### GET
-
-TODO
-
-## `/tag`
-
-### GET
-
-TODO
-
-## `/measurement`
-
-### POST
-
-Request body:
-```json
-[
-    {
-        "tag": "example-tag-slug",
-        "data": [
-            {
-                "value": 1.23,
-                "timestamp": "2023-12-03T09:19:00.000Z"
-            }
-        ]
-    }
-]
-```

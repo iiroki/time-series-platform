@@ -1,17 +1,11 @@
 namespace Iiroki.TimeSeriesPlatform.Util;
 
-public class RegistrationAsync : IAsyncDisposable
+public sealed class RegistrationAsync(Func<Task> disposeAction) : IAsyncDisposable
 {
-    private readonly Func<Task> _disposeAction;
-
-    public RegistrationAsync(Func<Task> disposeAction)
-    {
-        _disposeAction = disposeAction;
-    }
+    private readonly Func<Task> _disposeAction = disposeAction;
 
     public async ValueTask DisposeAsync()
     {
-        GC.SuppressFinalize(this);
         await _disposeAction();
     }
 }

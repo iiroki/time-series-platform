@@ -1,17 +1,11 @@
 namespace Iiroki.TimeSeriesPlatform.Util;
 
-public class Registration : IDisposable
+public sealed class Registration(Action disposeAction) : IDisposable
 {
-    private readonly Action _disposeAction;
-
-    public Registration(Action disposeAction)
-    {
-        _disposeAction = disposeAction;
-    }
+    private readonly Action _disposeAction = disposeAction;
 
     public void Dispose()
     {
-        GC.SuppressFinalize(this);
         _disposeAction();
     }
 }

@@ -1,5 +1,6 @@
 using Iiroki.TimeSeriesPlatform.Constants;
 using Iiroki.TimeSeriesPlatform.Dto;
+using Iiroki.TimeSeriesPlatform.Extensions;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,47 +9,32 @@ namespace Iiroki.TimeSeriesPlatform.Controllers;
 
 [ApiController]
 [Route("integration")]
-[Authorize]
-public class IntegrationController : ControllerBase
+[Authorize(Roles = AuthenticationKind.Admin)]
+public class IntegrationController(IMetadataService metadataService) : ControllerBase
 {
-    private readonly IMetadataService _metadataService;
+    private readonly IMetadataService _metadataService = metadataService;
 
-    public IntegrationController(IMetadataService metadataService)
-    {
-        _metadataService = metadataService;
-    }
-
+    /// <summary>
+    /// Gets all integrations.
+    /// </summary>
     [HttpGet]
     [Authorize(Roles = AuthenticationKind.ReaderOrAdmin)]
     public async Task<List<IntegrationDto>> GetAsync(CancellationToken ct)
     {
         var integrations = await _metadataService.GetIntegrationsAsync(ct);
-        return integrations
-            .Select(
-                i =>
-                    new IntegrationDto
-                    {
-                        Id = i.Id,
-                        Name = i.Name,
-                        Slug = i.Slug
-                    }
-            )
-            .ToList();
+        return integrations.ToDto().ToList();
     }
 
+    /// <summary>
+    /// Creates a new integration.
+    /// </summary>
     [HttpPost]
-    [Authorize(Roles = AuthenticationKind.Admin)]
     public async Task<ActionResult<IntegrationDto>> CreateAsync(
         [FromBody] IntegrationCreateDto data,
         CancellationToken ct
     )
     {
         var integration = await _metadataService.CreateIntegrationAsync(data.Name, data.Slug, ct);
-        return new IntegrationDto
-        {
-            Id = integration.Id,
-            Name = integration.Name,
-            Slug = integration.Name
-        };
+        return integration.ToDto();
     }
 }

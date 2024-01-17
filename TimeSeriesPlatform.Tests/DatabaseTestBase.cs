@@ -1,11 +1,13 @@
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Containers;
 using Iiroki.TimeSeriesPlatform.Database;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
 
 namespace Iiroki.TimeSeriesPlatform.Tests;
 
+[Category("Database")]
 public class DatabaseTestBase
 {
     private const int DbPort = 5678;
@@ -25,13 +27,20 @@ public class DatabaseTestBase
         $"Host=localhost:{DbPort}",
         $"Database={DbName}",
         "Username=postgres",
-        $"Password={DbPassword}"
+        $"Password={DbPassword}",
+        "Pooling=false"
     );
+
+    private IConfiguration? _config;
+    private DbContextOptions<TspDbContext>? _dbOptions;
 
     [OneTimeSetUp]
     public async Task SetupDbContainerAsync()
     {
         Environment.SetEnvironmentVariable(Config.DatabaseUrl, DbConnection);
+        _config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
+        _dbOptions = TspDbContext.CreateOptions(_config);
+
         if (DbContainer.State == TestcontainersStates.Undefined)
         {
             await DbContainer.StartAsync();
@@ -44,20 +53,12 @@ public class DatabaseTestBase
     [SetUp]
     public async Task InitDbAsync()
     {
-        var dbContext = CreateDbContext();
+        await using var dbContext = CreateDbContext();
         await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
     }
 
-    protected static TspDbContext CreateDbContext()
-    {
-        var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-        return TspDbContext.Create(config);
-    }
+    protected TspDbContext CreateDbContext() => new(_dbOptions!);
 
-    protected static NpgsqlDataSource CreateDbSource()
-    {
-        var config = new ConfigurationBuilder().AddEnvironmentVariables().Build();
-        return TspDbContext.CreateSource(config);
-    }
+    protected NpgsqlDataSource CreateDbSource() => TspDbContext.CreateSource(_config!);
 }
