@@ -4,6 +4,7 @@ using Iiroki.TimeSeriesPlatform.Services;
 // Configuration:
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddJsonOptions();
 builder.Services.AddApiKeyAuthentication();
 
 builder.Services.AddTspDatabase(builder.Configuration);

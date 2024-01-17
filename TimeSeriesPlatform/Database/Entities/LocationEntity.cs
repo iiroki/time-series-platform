@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Iiroki.TimeSeriesPlatform.Extensions;
+using Iiroki.TimeSeriesPlatform.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Iiroki.TimeSeriesPlatform.Database.Entities;
@@ -25,10 +26,4 @@ public class LocationEntity
     public DateTime VersionTimestamp { get; set; }
 
     public override string ToString() => this.Stringify();
-}
-
-public enum LocationType
-{
-    Physical,
-    Virtual
 }

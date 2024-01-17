@@ -1,4 +1,6 @@
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Iiroki.TimeSeriesPlatform.Database;
 using Iiroki.TimeSeriesPlatform.Middleware;
 using Microsoft.AspNetCore.Authentication;
@@ -12,6 +14,17 @@ namespace Iiroki.TimeSeriesPlatform.Extensions;
 
 public static class StartupExtensions
 {
+    /// <summary>
+    /// Adds default JSON options to services.
+    /// </summary>
+    public static void AddJsonOptions(this IServiceCollection services) =>
+        services.Configure<JsonOptions>(opt =>
+        {
+            opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+            opt.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+            opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        });
+
     /// <summary>
     /// Adds the basic API key authentication to services.
     /// </summary>
@@ -39,7 +52,15 @@ public static class StartupExtensions
     {
         services.AddSwaggerGen(opt =>
         {
-            opt.DocumentFilter<TspSwaggerFilter>();
+            opt.SwaggerDoc(
+                "v1",
+                new OpenApiInfo
+                {
+                    Title = "Time Series Platform",
+                    Description = "Time Series Platform (TSP) is a simple web app to work with time series data."
+                }
+            );
+
             opt.OperationFilter<TspSwaggerFilter>();
             opt.SupportNonNullableReferenceTypes();
             opt.IncludeXmlComments(
@@ -82,14 +103,8 @@ public static class StartupExtensions
             opt.Filters.Add(new ProducesAttribute("application/json"));
         });
 
-    private class TspSwaggerFilter : IDocumentFilter, IOperationFilter
+    private class TspSwaggerFilter : IOperationFilter
     {
-        public void Apply(OpenApiDocument doc, DocumentFilterContext _)
-        {
-            doc.Info.Title = "Time Series Platform";
-            doc.Info.Description = "Time Series Platform (TSP) is a simple web app to work with time series data.";
-        }
-
         public void Apply(OpenApiOperation operation, OperationFilterContext ctx)
         {
             // Read from the endpoint
