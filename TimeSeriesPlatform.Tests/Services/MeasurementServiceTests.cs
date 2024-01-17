@@ -21,7 +21,7 @@ public class MeasurementServiceTests : DatabaseTestBase
     {
         _measurementService = new MeasurementService(CreateDbSource(), Substitute.For<ILogger<MeasurementService>>());
 
-        var dbContext = CreateDbContext();
+        await using var dbContext = CreateDbContext();
         dbContext.AddRange(
             TestTags.Select((t, i) => new TagEntity { Name = $"{nameof(MeasurementService)} Tag {1 + i}", Slug = t })
         );
@@ -138,7 +138,7 @@ public class MeasurementServiceTests : DatabaseTestBase
         AssertMeasurements(measurements, result, TestIntegration);
     }
 
-    private static async Task<List<MeasurementEntity>> GetResultAsync() =>
+    private async Task<List<MeasurementEntity>> GetResultAsync() =>
         await CreateDbContext()
             .Measurement
             .AsNoTracking()

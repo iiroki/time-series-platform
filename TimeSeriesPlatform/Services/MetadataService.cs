@@ -68,7 +68,7 @@ public class MetadataService : IMetadataService
     }
 
     public async Task<List<LocationEntity>> GetLocationsAsync(CancellationToken ct) =>
-        await _dbContext.Location.ToListAsync(ct);
+        await _dbContext.Location.AsNoTracking().ToListAsync(ct);
 
     public async Task<LocationEntity> CreateLocationAsync(
         string name,

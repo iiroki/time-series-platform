@@ -27,7 +27,7 @@ public class MetadataServiceTests : DatabaseTestBase
             new IntegrationEntity { Name = "Third Integration", Slug = "3rd" }
         };
 
-        var dbContext = CreateDbContext();
+        await using var dbContext = CreateDbContext();
         dbContext.Integration.AddRange(integrations);
         await dbContext.SaveChangesAsync();
 
@@ -116,7 +116,7 @@ public class MetadataServiceTests : DatabaseTestBase
             }
         };
 
-        var dbContext = CreateDbContext();
+        await using var dbContext = CreateDbContext();
         dbContext.Tag.AddRange(tags);
         await dbContext.SaveChangesAsync();
 
