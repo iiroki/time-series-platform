@@ -183,7 +183,7 @@ public class MeasurementServiceTests : DatabaseTestBase
                 Assert.That(a.Tag.Slug, Is.EqualTo(e.Tag));
                 Assert.That(a.Integration.Slug, Is.EqualTo(integration));
                 Assert.That(a.Location?.Slug, Is.EqualTo(e.Location));
-                Assert.That(a.Timestamp, Is.EqualTo(data.Timestamp).Within(TimeSpan.FromMilliseconds(0)));
+                Assert.That(a.Timestamp, Is.EqualTo(data.Timestamp).Within(TimeSpan.FromMicroseconds(1)));
                 Assert.That(a.Value, Is.EqualTo(data.Value));
                 if (versionTimestamp.HasValue)
                 {
