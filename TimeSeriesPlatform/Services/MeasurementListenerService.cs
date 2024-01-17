@@ -55,7 +55,7 @@ public class MeasurementListenerService : IMeasurementListenerService
         await using var dbConnection = new LogicalReplicationConnection(connection);
         var slot = new PgOutputReplicationSlot(SlotName);
 
-        _logger.LogInformation("Starting Postgres replication with 'pgoutput'...");
+        _logger.LogInformation("Starting Postgres replication with 'pgoutput'");
         await dbConnection.Open(ct);
         await foreach (
             var msg in dbConnection.StartReplication(

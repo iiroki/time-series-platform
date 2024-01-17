@@ -1,6 +1,6 @@
 # Time Series Platfrom
 
-Time Series Platform, built with .NET and Timescale, is a simple web application to store and query time series data.
+Time Series Platform (TSP), built with .NET and Timescale, is a simple web application to work with time series data.
 
 The project is mainly done for learning purposes and the main thing about this project is to experiment with
 different technologies and see how they integrate with each other.
@@ -38,7 +38,7 @@ In order to work with time series data, Time Series Platform uses the following 
 - _Location_: Measurements can also be bound to location, but do not have to.
     - For example, a temperature tag can receive values from various location.
     - Locations can be used to distinguish measurements (example: temperature) from the same tag and integration.
-- _Measurement_: The actual time series data of Time Series Platform, 
+- _Measurement_: The actual time series data of Time Series Platform, which contains numerical observations at various time intervals.
 
 # Features
 

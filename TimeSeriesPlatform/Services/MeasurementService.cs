@@ -19,7 +19,7 @@ public class MeasurementService : IMeasurementService
     }
 
     public async Task SaveMeasurementsAsync(
-        IList<MeasurementDto> measurements,
+        IList<MeasurementBatchDto> measurements,
         string integrationSlug,
         CancellationToken ct
     )

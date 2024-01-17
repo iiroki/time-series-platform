@@ -8,7 +8,7 @@ namespace Iiroki.TimeSeriesPlatform.Controllers;
 
 [ApiController]
 [Route("integration")]
-[Authorize]
+[Authorize(Roles = AuthenticationKind.Admin)]
 public class IntegrationController : ControllerBase
 {
     private readonly IMetadataService _metadataService;
@@ -18,6 +18,9 @@ public class IntegrationController : ControllerBase
         _metadataService = metadataService;
     }
 
+    /// <summary>
+    /// Gets all integrations.
+    /// </summary>
     [HttpGet]
     [Authorize(Roles = AuthenticationKind.ReaderOrAdmin)]
     public async Task<List<IntegrationDto>> GetAsync(CancellationToken ct)
@@ -36,8 +39,10 @@ public class IntegrationController : ControllerBase
             .ToList();
     }
 
+    /// <summary>
+    /// Creates a new integration.
+    /// </summary>
     [HttpPost]
-    [Authorize(Roles = AuthenticationKind.Admin)]
     public async Task<ActionResult<IntegrationDto>> CreateAsync(
         [FromBody] IntegrationCreateDto data,
         CancellationToken ct

@@ -1,9 +1,12 @@
+using System.Reflection;
 using Iiroki.TimeSeriesPlatform.Database;
 using Iiroki.TimeSeriesPlatform.Middleware;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Iiroki.TimeSeriesPlatform.Extensions;
 
@@ -36,7 +39,12 @@ public static class StartupExtensions
     {
         services.AddSwaggerGen(opt =>
         {
+            opt.DocumentFilter<TspSwaggerFilter>();
+            opt.OperationFilter<TspSwaggerFilter>();
             opt.SupportNonNullableReferenceTypes();
+            opt.IncludeXmlComments(
+                Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml")
+            );
 
             opt.AddSecurityDefinition(
                 Config.ApiKey,
@@ -73,4 +81,39 @@ public static class StartupExtensions
             opt.Filters.Add(new ConsumesAttribute("application/json"));
             opt.Filters.Add(new ProducesAttribute("application/json"));
         });
+
+    private class TspSwaggerFilter : IDocumentFilter, IOperationFilter
+    {
+        public void Apply(OpenApiDocument doc, DocumentFilterContext _)
+        {
+            doc.Info.Title = "Time Series Platform";
+            doc.Info.Description = "Time Series Platform (TSP) is a simple web app to work with time series data.";
+        }
+
+        public void Apply(OpenApiOperation operation, OperationFilterContext ctx)
+        {
+            // Read from the endpoint
+            var roles = ctx.MethodInfo
+                .GetCustomAttributes(true)
+                .OfType<AuthorizeAttribute>()
+                .Select(a => a.Roles)
+                .ToList();
+
+            // Read from the controller if not defined on endpoint level
+            if (roles.Count == 0 && ctx.MethodInfo.DeclaringType != null)
+            {
+                roles = ctx.MethodInfo
+                    .DeclaringType
+                    .GetCustomAttributes(true)
+                    .OfType<AuthorizeAttribute>()
+                    .Select(a => a.Roles)
+                    .ToList();
+            }
+
+            if (roles.Where(r => !string.IsNullOrWhiteSpace(r)).ToList().Count > 0)
+            {
+                operation.Description += $"<p><b>Roles:</b> {string.Join(", ", roles)}</p>";
+            }
+        }
+    }
 }

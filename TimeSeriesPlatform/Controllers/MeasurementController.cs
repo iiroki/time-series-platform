@@ -14,8 +14,11 @@ public class MeasurementController(IMeasurementService measurementService) : Con
 {
     private readonly IMeasurementService _measurementService = measurementService;
 
+    /// <summary>
+    /// Ingests measurements (integration is resolved from the API key).
+    /// </summary>
     [HttpPost]
     [Authorize(Roles = AuthenticationKind.Integration)]
-    public async Task SaveAsync(IList<MeasurementDto> measurements, CancellationToken ct) =>
+    public async Task SaveAsync(IList<MeasurementBatchDto> measurements, CancellationToken ct) =>
         await _measurementService.SaveMeasurementsAsync(measurements, HttpContext.User.GetIntegrationSlug(), ct);
 }
