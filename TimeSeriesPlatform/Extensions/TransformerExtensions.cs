@@ -1,11 +1,11 @@
 using Iiroki.TimeSeriesPlatform.Database.Entities;
-using Iiroki.TimeSeriesPlatform.Dto;
+using Iiroki.TimeSeriesPlatform.Models;
 
 namespace Iiroki.TimeSeriesPlatform.Extensions;
 
 public static class TransformerExtensions
 {
-    public static IntegrationDto ToDto(this IntegrationEntity integration) =>
+    public static Integration ToDto(this IntegrationEntity integration) =>
         new()
         {
             Id = integration.Id,
@@ -13,12 +13,20 @@ public static class TransformerExtensions
             Slug = integration.Slug
         };
 
-    public static IEnumerable<IntegrationDto> ToDto(this IEnumerable<IntegrationEntity> integrations) =>
+    public static IEnumerable<Integration> ToDto(this IEnumerable<IntegrationEntity> integrations) =>
         integrations.Select(i => i.ToDto());
 
-    // TODO: Tags
+    public static Tag ToDto(this TagEntity tag) =>
+        new()
+        {
+            Id = tag.Id,
+            Name = tag.Name ?? tag.Slug, // Fallback if the tag was created automatically
+            Slug = tag.Slug
+        };
 
-    public static LocationDto ToDto(this LocationEntity location) =>
+    public static IEnumerable<Tag> ToDto(this IEnumerable<TagEntity> tags) => tags.Select(t => t.ToDto());
+
+    public static Location ToDto(this LocationEntity location) =>
         new()
         {
             Id = location.Id,
@@ -27,6 +35,6 @@ public static class TransformerExtensions
             Type = location.Type
         };
 
-    public static IEnumerable<LocationDto> ToDto(this IEnumerable<LocationEntity> locations) =>
+    public static IEnumerable<Location> ToDto(this IEnumerable<LocationEntity> locations) =>
         locations.Select(l => l.ToDto());
 }

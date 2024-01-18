@@ -52,15 +52,7 @@ public static class StartupExtensions
     {
         services.AddSwaggerGen(opt =>
         {
-            opt.SwaggerDoc(
-                "v1",
-                new OpenApiInfo
-                {
-                    Title = "Time Series Platform",
-                    Description = "Time Series Platform (TSP) is a simple web app to work with time series data."
-                }
-            );
-
+            opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Time Series Platform" });
             opt.OperationFilter<TspSwaggerFilter>();
             opt.SupportNonNullableReferenceTypes();
             opt.IncludeXmlComments(

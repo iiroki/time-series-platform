@@ -1,5 +1,5 @@
 using Iiroki.TimeSeriesPlatform.Database.Entities;
-using Iiroki.TimeSeriesPlatform.Dto;
+using Iiroki.TimeSeriesPlatform.Models.Dto;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,7 +14,7 @@ public class MeasurementServiceTests : DatabaseTestBase
     private const string TestIntegration = "test-integration";
     private static readonly string[] TestTags = Enumerable.Range(1, 5).Select(i => $"{TestTagPrefix}_{i}").ToArray();
 
-    private MeasurementService _measurementService = null!;
+    private IMeasurementService _measurementService = null!;
 
     [SetUp]
     public async Task SetupAsync()
@@ -44,7 +44,7 @@ public class MeasurementServiceTests : DatabaseTestBase
         var measurements = TestTags
             .Select(
                 (t, i) =>
-                    new MeasurementBatchDto()
+                    new MeasurementBatch
                     {
                         Tag = t,
                         Location = i % 2 == 0 ? TestLocation : null,
@@ -60,7 +60,7 @@ public class MeasurementServiceTests : DatabaseTestBase
             )
             .ToList();
 
-        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration, CancellationToken.None);
+        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration);
 
         var result = await GetResultAsync();
         AssertMeasurements(measurements, result, TestIntegration);
@@ -71,7 +71,7 @@ public class MeasurementServiceTests : DatabaseTestBase
     {
         var now = DateTime.UtcNow;
         var tag = TestTags.First();
-        var measurements = new List<MeasurementBatchDto>
+        var measurements = new List<MeasurementBatch>
         {
             new()
             {
@@ -84,7 +84,7 @@ public class MeasurementServiceTests : DatabaseTestBase
             }
         };
 
-        var updatedMeasurements = new List<MeasurementBatchDto>
+        var updatedMeasurements = new List<MeasurementBatch>
         {
             new()
             {
@@ -93,11 +93,11 @@ public class MeasurementServiceTests : DatabaseTestBase
             }
         };
 
-        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration, CancellationToken.None);
-        await _measurementService.SaveMeasurementsAsync(updatedMeasurements, TestIntegration, CancellationToken.None);
+        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration);
+        await _measurementService.SaveMeasurementsAsync(updatedMeasurements, TestIntegration);
 
         var result = await GetResultAsync();
-        var expected = new List<MeasurementBatchDto>
+        var expected = new List<MeasurementBatch>
         {
             new() { Tag = tag, Data = [measurements.First().Data.Last()] },
             new() { Tag = tag, Data = updatedMeasurements.First().Data }
@@ -111,7 +111,7 @@ public class MeasurementServiceTests : DatabaseTestBase
     {
         var now = DateTime.UtcNow;
         var tag = TestTags.First();
-        var measurements = new List<MeasurementBatchDto>
+        var measurements = new List<MeasurementBatch>
         {
             new()
             {
@@ -121,7 +121,7 @@ public class MeasurementServiceTests : DatabaseTestBase
             }
         };
 
-        var ignoredMeasurements = new List<MeasurementBatchDto>
+        var ignoredMeasurements = new List<MeasurementBatch>
         {
             new()
             {
@@ -131,8 +131,8 @@ public class MeasurementServiceTests : DatabaseTestBase
             }
         };
 
-        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration, CancellationToken.None);
-        await _measurementService.SaveMeasurementsAsync(ignoredMeasurements, TestIntegration, CancellationToken.None);
+        await _measurementService.SaveMeasurementsAsync(measurements, TestIntegration);
+        await _measurementService.SaveMeasurementsAsync(ignoredMeasurements, TestIntegration);
 
         var result = await GetResultAsync();
         AssertMeasurements(measurements, result, TestIntegration);
@@ -148,7 +148,7 @@ public class MeasurementServiceTests : DatabaseTestBase
             .ToListAsync();
 
     private static void AssertMeasurements(
-        IList<MeasurementBatchDto> expected,
+        IList<MeasurementBatch> expected,
         IList<MeasurementEntity> actual,
         string integration,
         DateTime? versionTimestamp = null
@@ -159,7 +159,7 @@ public class MeasurementServiceTests : DatabaseTestBase
                 e =>
                     e.Data.Select(
                         d =>
-                            new MeasurementBatchDto
+                            new MeasurementBatch
                             {
                                 Tag = e.Tag,
                                 Location = e.Location,

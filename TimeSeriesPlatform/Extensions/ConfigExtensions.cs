@@ -7,7 +7,7 @@ public static class ConfigExtensions
         var value = config[key];
         if (string.IsNullOrWhiteSpace(value))
         {
-            throw new ArgumentException($"Required configuration is missing with key: {key}");
+            throw new ArgumentException($"Required configuration is missing: {key}");
         }
 
         return value;

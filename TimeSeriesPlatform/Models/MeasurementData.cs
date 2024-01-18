@@ -1,6 +1,6 @@
-namespace Iiroki.TimeSeriesPlatform.Dto;
+namespace Iiroki.TimeSeriesPlatform.Models.Dto;
 
-public record MeasurementDataDto
+public record MeasurementData
 {
     public required double Value { get; init; }
 

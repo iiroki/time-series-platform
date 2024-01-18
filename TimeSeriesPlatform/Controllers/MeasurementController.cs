@@ -1,6 +1,6 @@
 using Iiroki.TimeSeriesPlatform.Constants;
-using Iiroki.TimeSeriesPlatform.Dto;
 using Iiroki.TimeSeriesPlatform.Extensions;
+using Iiroki.TimeSeriesPlatform.Models.Dto;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,6 +19,9 @@ public class MeasurementController(IMeasurementService measurementService) : Con
     /// </summary>
     [HttpPost]
     [Authorize(Roles = AuthenticationKind.Integration)]
-    public async Task SaveAsync(IList<MeasurementBatchDto> measurements, CancellationToken ct) =>
+    public async Task<ActionResult> SaveAsync(IList<MeasurementBatch> measurements, CancellationToken ct)
+    {
         await _measurementService.SaveMeasurementsAsync(measurements, HttpContext.User.GetIntegrationSlug(), ct);
+        return new StatusCodeResult(StatusCodes.Status204NoContent);
+    }
 }

@@ -1,12 +1,12 @@
-using Iiroki.TimeSeriesPlatform.Dto;
+using Iiroki.TimeSeriesPlatform.Models.Dto;
 
 namespace Iiroki.TimeSeriesPlatform.Services;
 
 public interface IMeasurementService
 {
     public Task SaveMeasurementsAsync(
-        IList<MeasurementBatchDto> measurements,
+        IList<MeasurementBatch> measurements,
         string integrationSlug,
-        CancellationToken ct
+        CancellationToken ct = default
     );
 }

@@ -1,6 +1,6 @@
-namespace Iiroki.TimeSeriesPlatform.Dto;
+namespace Iiroki.TimeSeriesPlatform.Models;
 
-public record IntegrationCreateDto
+public record TagData
 {
     public required string Name { get; init; }
 
