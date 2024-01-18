@@ -31,7 +31,7 @@ public class MetadataServiceTests : DatabaseTestBase
         dbContext.Integration.AddRange(integrations);
         await dbContext.SaveChangesAsync();
 
-        var result = await _metadataService.GetIntegrationsAsync(CancellationToken.None);
+        var result = await _metadataService.GetIntegrationsAsync();
         var expected = integrations.OrderBy(i => i.Slug).ToList();
         var actual = result.OrderBy(i => i.Slug).ToList();
 
@@ -53,8 +53,8 @@ public class MetadataServiceTests : DatabaseTestBase
     {
         var name = "Test Integration";
         var slug = "integration";
-        var result = await _metadataService.CreateIntegrationAsync(name, slug, CancellationToken.None);
-        var integrations = await _metadataService.GetIntegrationsAsync(CancellationToken.None);
+        var result = await _metadataService.CreateIntegrationAsync(new() { Name = name, Slug = slug });
+        var integrations = await _metadataService.GetIntegrationsAsync();
         var integration = integrations.FirstOrDefault(i => i.Id == result.Id);
 
         Assert.Multiple(() =>
@@ -69,11 +69,10 @@ public class MetadataServiceTests : DatabaseTestBase
     public async Task MetadataService_CreateIntegrationAsync_Unique_Error()
     {
         var slug = "integration";
-        await _metadataService.CreateIntegrationAsync("Test Integration", slug, CancellationToken.None);
-
+        await _metadataService.CreateIntegrationAsync(new() { Name = "Test Integration", Slug = slug });
         Assert.ThrowsAsync<MetadataServiceException>(
             async () =>
-                await _metadataService.CreateIntegrationAsync("Duplicate Integration", slug, CancellationToken.None)
+                await _metadataService.CreateIntegrationAsync(new() { Name = "Duplicate Integration", Slug = slug })
         );
     }
     #endregion
@@ -120,7 +119,7 @@ public class MetadataServiceTests : DatabaseTestBase
         dbContext.Tag.AddRange(tags);
         await dbContext.SaveChangesAsync();
 
-        var result = await _metadataService.GetTagsAsync(CancellationToken.None);
+        var result = await _metadataService.GetTagsAsync();
         var expected = tags.OrderBy(i => i.Slug).ToList();
         var actual = result.OrderBy(i => i.Slug).ToList();
 
@@ -142,8 +141,8 @@ public class MetadataServiceTests : DatabaseTestBase
     {
         var name = "Test Tag";
         var slug = "tag";
-        var result = await _metadataService.CreateTagAsync(name, slug, CancellationToken.None);
-        var tags = await _metadataService.GetTagsAsync(CancellationToken.None);
+        var result = await _metadataService.CreateTagAsync(new() { Name = name, Slug = slug });
+        var tags = await _metadataService.GetTagsAsync();
         var tag = tags.FirstOrDefault(i => i.Id == result.Id);
 
         Assert.Multiple(() =>
@@ -158,10 +157,10 @@ public class MetadataServiceTests : DatabaseTestBase
     public async Task MetadataService_CreateTagAsync_Unique_Error()
     {
         var slug = "tag";
-        await _metadataService.CreateTagAsync("Test Tag", slug, CancellationToken.None);
+        await _metadataService.CreateTagAsync(new() { Name = "Test Tag", Slug = slug });
 
         Assert.ThrowsAsync<MetadataServiceException>(
-            async () => await _metadataService.CreateTagAsync("Duplicate Tag", slug, CancellationToken.None)
+            async () => await _metadataService.CreateTagAsync(new() { Name = "Duplicate Tag", Slug = slug })
         );
     }
     #endregion

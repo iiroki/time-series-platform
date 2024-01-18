@@ -7,6 +7,6 @@ public interface IMeasurementService
     public Task SaveMeasurementsAsync(
         IList<MeasurementBatch> measurements,
         string integrationSlug,
-        CancellationToken ct
+        CancellationToken ct = default
     );
 }
