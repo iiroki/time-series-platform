@@ -1,4 +1,4 @@
-using Iiroki.TimeSeriesPlatform.Models;
+using Iiroki.TimeSeriesPlatform.Models.Internal;
 
 namespace Iiroki.TimeSeriesPlatform.Services;
 

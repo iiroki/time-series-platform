@@ -8,13 +8,9 @@ namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 /// <summary>
 /// Location schema.
 /// </summary>
-[PrimaryKey(nameof(Id))]
 [Index(nameof(Slug), IsUnique = true)]
-public class LocationEntity
+public class LocationEntity : IdentifierEntityBase
 {
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long Id { get; set; }
-
     public string Name { get; set; } = default!;
 
     public string Slug { get; set; } = default!;

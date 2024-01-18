@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Iiroki.TimeSeriesPlatform.Database.Queries;
-using Iiroki.TimeSeriesPlatform.Dto;
 using Iiroki.TimeSeriesPlatform.Extensions;
+using Iiroki.TimeSeriesPlatform.Models.Dto;
 using Iiroki.TimeSeriesPlatform.Services.Exceptions;
 using Npgsql;
 
@@ -19,7 +19,7 @@ public class MeasurementService : IMeasurementService
     }
 
     public async Task SaveMeasurementsAsync(
-        IList<MeasurementBatchDto> measurements,
+        IList<MeasurementBatch> measurements,
         string integrationSlug,
         CancellationToken ct
     )

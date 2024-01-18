@@ -1,8 +1,6 @@
-using Iiroki.TimeSeriesPlatform.Models;
+namespace Iiroki.TimeSeriesPlatform.Models;
 
-namespace Iiroki.TimeSeriesPlatform.Dto;
-
-public record LocationBaseDto
+public record LocationData
 {
     public required string Name { get; init; }
 

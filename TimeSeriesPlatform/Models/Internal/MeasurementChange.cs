@@ -1,4 +1,4 @@
-namespace Iiroki.TimeSeriesPlatform.Models;
+namespace Iiroki.TimeSeriesPlatform.Models.Internal;
 
 public record MeasurementChange
 {

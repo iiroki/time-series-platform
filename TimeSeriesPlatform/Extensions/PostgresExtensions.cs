@@ -1,5 +1,5 @@
 using Iiroki.TimeSeriesPlatform.Database.Entities;
-using Iiroki.TimeSeriesPlatform.Models;
+using Iiroki.TimeSeriesPlatform.Models.Internal;
 using Npgsql.Replication.PgOutput;
 using Npgsql.Replication.PgOutput.Messages;
 

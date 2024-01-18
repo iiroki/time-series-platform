@@ -1,6 +1,6 @@
 using Iiroki.TimeSeriesPlatform.Database;
 using Iiroki.TimeSeriesPlatform.Extensions;
-using Iiroki.TimeSeriesPlatform.Models;
+using Iiroki.TimeSeriesPlatform.Models.Internal;
 using Iiroki.TimeSeriesPlatform.Util;
 using Npgsql;
 using Npgsql.Replication;
