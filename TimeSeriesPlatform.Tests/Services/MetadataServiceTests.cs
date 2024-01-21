@@ -1,6 +1,7 @@
 using Iiroki.TimeSeriesPlatform.Database.Entities;
 using Iiroki.TimeSeriesPlatform.Services;
 using Iiroki.TimeSeriesPlatform.Services.Exceptions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Sqids;
@@ -9,21 +10,18 @@ namespace Iiroki.TimeSeriesPlatform.Tests.Services;
 
 public class MetadataServiceTests : DatabaseTestBase
 {
+    private readonly SqidsEncoder<long> _sqids = new();
     private IMetadataService _metadataService = null!;
 
     [SetUp]
     public void SetupAsync()
     {
-        _metadataService = new MetadataService(
-            CreateDbContext(),
-            new SqidsEncoder<long>(),
-            Substitute.For<ILogger<MetadataService>>()
-        );
+        _metadataService = new MetadataService(CreateDbContext(), _sqids, Substitute.For<ILogger<MetadataService>>());
     }
 
     #region Integrations
     [Test]
-    public async Task MetadataService_GetIntegrationsAsync_Ok()
+    public async Task MetadataService_GetIntegrations_Ok()
     {
         var integrations = new[]
         {
@@ -54,7 +52,7 @@ public class MetadataServiceTests : DatabaseTestBase
     }
 
     [Test]
-    public async Task MetadataService_CreateIntegrationAsync_Ok()
+    public async Task MetadataService_CreateIntegration_Ok()
     {
         var name = "Test Integration";
         var slug = "integration";
@@ -71,7 +69,7 @@ public class MetadataServiceTests : DatabaseTestBase
     }
 
     [Test]
-    public async Task MetadataService_CreateIntegrationAsync_Unique_Error()
+    public async Task MetadataService_CreateIntegration_Unique_Error()
     {
         var slug = "integration";
         await _metadataService.CreateIntegrationAsync(new() { Name = "Test Integration", Slug = slug });
@@ -86,7 +84,7 @@ public class MetadataServiceTests : DatabaseTestBase
 
     #region Tags
     [Test]
-    public async Task MetadataService_GetTagsAsync_Ok()
+    public async Task MetadataService_GetTags_Ok()
     {
         var tags = new[]
         {
@@ -144,7 +142,7 @@ public class MetadataServiceTests : DatabaseTestBase
     }
 
     [Test]
-    public async Task MetadataService_CreateTagAsync_Ok()
+    public async Task MetadataService_CreateTag_Ok()
     {
         var name = "Test Tag";
         var slug = "tag";
@@ -161,7 +159,7 @@ public class MetadataServiceTests : DatabaseTestBase
     }
 
     [Test]
-    public async Task MetadataService_CreateTagAsync_Unique_Error()
+    public async Task MetadataService_CreateTag_Unique_Error()
     {
         var slug = "tag";
         await _metadataService.CreateTagAsync(new() { Name = "Test Tag", Slug = slug });
@@ -171,7 +169,26 @@ public class MetadataServiceTests : DatabaseTestBase
         );
     }
 
-    // TODO: Delete test
+    [Test]
+    public async Task MetadataService_DeleteTag_Ok()
+    {
+        var tag = new TagEntity
+        {
+            Id = 123,
+            Name = "Test Tag",
+            Slug = "test"
+        };
+        await using var dbContext = CreateDbContext();
+        dbContext.Tag.Add(tag);
+        await dbContext.SaveChangesAsync();
+
+        var result = await _metadataService.DeleteTagAsync(_sqids.Encode(tag.Id));
+        Assert.Multiple(async () =>
+        {
+            Assert.That(result, Is.True);
+            Assert.That(await dbContext.Tag.ToListAsync(), Is.Empty);
+        });
+    }
     #endregion
 
     // TODO: Location tests

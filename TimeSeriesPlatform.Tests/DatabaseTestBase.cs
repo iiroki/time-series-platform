@@ -54,7 +54,7 @@ public class DatabaseTestBase
     public async Task InitDbAsync()
     {
         await using var dbContext = CreateDbContext();
-        await dbContext.Database.EnsureDeletedAsync();
+        await dbContext.Database.ExecuteSqlRawAsync($"DROP SCHEMA IF EXISTS {TspDbContext.Schema} CASCADE;");
         await dbContext.Database.EnsureCreatedAsync();
     }
 
