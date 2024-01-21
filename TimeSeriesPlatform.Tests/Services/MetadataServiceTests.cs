@@ -3,6 +3,7 @@ using Iiroki.TimeSeriesPlatform.Services;
 using Iiroki.TimeSeriesPlatform.Services.Exceptions;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
+using Sqids;
 
 namespace Iiroki.TimeSeriesPlatform.Tests.Services;
 
@@ -13,7 +14,11 @@ public class MetadataServiceTests : DatabaseTestBase
     [SetUp]
     public void SetupAsync()
     {
-        _metadataService = new MetadataService(CreateDbContext(), Substitute.For<ILogger<MetadataService>>());
+        _metadataService = new MetadataService(
+            CreateDbContext(),
+            new SqidsEncoder<long>(),
+            Substitute.For<ILogger<MetadataService>>()
+        );
     }
 
     #region Integrations
@@ -75,6 +80,8 @@ public class MetadataServiceTests : DatabaseTestBase
                 await _metadataService.CreateIntegrationAsync(new() { Name = "Duplicate Integration", Slug = slug })
         );
     }
+
+    // TODO: Delete test
     #endregion
 
     #region Tags
@@ -163,5 +170,9 @@ public class MetadataServiceTests : DatabaseTestBase
             async () => await _metadataService.CreateTagAsync(new() { Name = "Duplicate Tag", Slug = slug })
         );
     }
+
+    // TODO: Delete test
     #endregion
+
+    // TODO: Location tests
 }
