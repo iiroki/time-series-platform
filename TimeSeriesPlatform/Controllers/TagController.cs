@@ -1,5 +1,4 @@
 using Iiroki.TimeSeriesPlatform.Constants;
-using Iiroki.TimeSeriesPlatform.Extensions;
 using Iiroki.TimeSeriesPlatform.Models;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,6 @@ namespace Iiroki.TimeSeriesPlatform.Controllers;
 
 [ApiController]
 [Route("tag")]
-[Authorize(Roles = AuthenticationKind.Admin)]
 public class TagController(IMetadataService metadataService) : ControllerBase
 {
     private readonly IMetadataService _metadataService = metadataService;
@@ -20,20 +18,22 @@ public class TagController(IMetadataService metadataService) : ControllerBase
     [HttpGet]
     [Authorize(Roles = AuthenticationKind.ReaderOrAdmin)]
     public async Task<ActionResult<List<Tag>>> GetAsync(CancellationToken ct) =>
-        (await _metadataService.GetTagsAsync(ct)).ToDto().ToList();
+        await _metadataService.GetTagsAsync(ct);
 
     /// <summary>
     /// Creates a new tag.
     /// </summary>
     [HttpPost]
+    [Authorize(Roles = AuthenticationKind.Admin)]
     public async Task<ActionResult<Tag>> CreateAsync([FromBody] TagData data, CancellationToken ct) =>
-        (await _metadataService.CreateTagAsync(data, ct)).ToDto();
+        await _metadataService.CreateTagAsync(data, ct);
 
     /// <summary>
     /// Deletes a tag.
     /// </summary>
     [HttpDelete(":id")]
-    public async Task<ActionResult> DeleteAsync(long id, CancellationToken ct) =>
+    [Authorize(Roles = AuthenticationKind.Admin)]
+    public async Task<ActionResult> DeleteAsync(string id, CancellationToken ct) =>
         await _metadataService.DeleteTagAsync(id, ct)
             ? new StatusCodeResult(StatusCodes.Status204NoContent)
             : new StatusCodeResult(StatusCodes.Status404NotFound);

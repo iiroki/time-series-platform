@@ -1,5 +1,4 @@
 using Iiroki.TimeSeriesPlatform.Constants;
-using Iiroki.TimeSeriesPlatform.Extensions;
 using Iiroki.TimeSeriesPlatform.Models;
 using Iiroki.TimeSeriesPlatform.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,6 @@ namespace Iiroki.TimeSeriesPlatform.Controllers;
 
 [ApiController]
 [Route("location")]
-[Authorize(Roles = AuthenticationKind.Admin)]
 public class LocationController(IMetadataService metadataService) : ControllerBase
 {
     private readonly IMetadataService _metadataService = metadataService;
@@ -20,20 +18,22 @@ public class LocationController(IMetadataService metadataService) : ControllerBa
     [HttpGet]
     [Authorize(Roles = AuthenticationKind.ReaderOrAdmin)]
     public async Task<ActionResult<List<Location>>> GetAsync(CancellationToken ct) =>
-        (await _metadataService.GetLocationsAsync(ct)).ToDto().ToList();
+        await _metadataService.GetLocationsAsync(ct);
 
     /// <summary>
     /// Creates a new location.
     /// </summary>
     [HttpPost]
+    [Authorize(Roles = AuthenticationKind.Admin)]
     public async Task<ActionResult<Location>> CreateAsync([FromBody] LocationData data, CancellationToken ct) =>
-        (await _metadataService.CreateLocationAsync(data, ct)).ToDto();
+        await _metadataService.CreateLocationAsync(data, ct);
 
     /// <summary>
     /// Deletes a location.
     /// </summary>
     [HttpDelete(":id")]
-    public async Task<ActionResult> DeleteAsync(long id, CancellationToken ct) =>
+    [Authorize(Roles = AuthenticationKind.Admin)]
+    public async Task<ActionResult> DeleteAsync(string id, CancellationToken ct) =>
         await _metadataService.DeleteLocationAsync(id, ct)
             ? new StatusCodeResult(StatusCodes.Status204NoContent)
             : new StatusCodeResult(StatusCodes.Status404NotFound);
