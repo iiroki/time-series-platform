@@ -64,6 +64,7 @@ public static class StartupExtensions
             opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Time Series Platform" });
             opt.OperationFilter<TspSwaggerFilter>();
             opt.SupportNonNullableReferenceTypes();
+            opt.UseAllOfToExtendReferenceSchemas();
             opt.IncludeXmlComments(
                 Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml")
             );
