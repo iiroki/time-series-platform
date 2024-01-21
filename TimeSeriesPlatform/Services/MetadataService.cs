@@ -42,7 +42,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
 
     public async Task<bool> DeleteIntegrationAsync(string id, CancellationToken ct)
     {
-        var decodedId = _sqids.DecodeFirst(id);
+        var decodedId = _sqids.DecodeSingle(id);
         _dbContext.Integration.Remove(new IntegrationEntity { Id = decodedId });
         if (await _dbContext.SaveDeleteAsync(ct))
         {
@@ -80,7 +80,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
 
     public async Task<bool> DeleteTagAsync(string id, CancellationToken ct)
     {
-        var decodedId = _sqids.DecodeFirst(id);
+        var decodedId = _sqids.DecodeSingle(id);
         _dbContext.Tag.Remove(new TagEntity { Id = decodedId });
         if (await _dbContext.SaveDeleteAsync(ct))
         {
@@ -119,7 +119,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
 
     public async Task<bool> DeleteLocationAsync(string id, CancellationToken ct)
     {
-        var decodedId = _sqids.DecodeFirst(id);
+        var decodedId = _sqids.DecodeSingle(id);
         _dbContext.Location.Remove(new() { Id = decodedId });
         if (await _dbContext.SaveDeleteAsync(ct))
         {
