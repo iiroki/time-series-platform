@@ -4,24 +4,21 @@ using Iiroki.TimeSeriesPlatform.Extensions;
 using Iiroki.TimeSeriesPlatform.Models;
 using Iiroki.TimeSeriesPlatform.Services.Exceptions;
 using Microsoft.EntityFrameworkCore;
+using Sqids;
 
 namespace Iiroki.TimeSeriesPlatform.Services;
 
-public class MetadataService : IMetadataService
+public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, ILogger<MetadataService> logger)
+    : IMetadataService
 {
-    private readonly TspDbContext _dbContext;
-    private readonly ILogger<MetadataService> _logger;
+    private readonly TspDbContext _dbContext = dbContext;
+    private readonly SqidsEncoder<long> _sqids = sqids;
+    private readonly ILogger<MetadataService> _logger = logger;
 
-    public MetadataService(TspDbContext dbContext, ILogger<MetadataService> logger)
-    {
-        _dbContext = dbContext;
-        _logger = logger;
-    }
+    public async Task<List<Integration>> GetIntegrationsAsync(CancellationToken ct) =>
+        (await _dbContext.Integration.AsNoTracking().ToListAsync(ct)).ToDto(_sqids).ToList();
 
-    public async Task<List<IntegrationEntity>> GetIntegrationsAsync(CancellationToken ct) =>
-        await _dbContext.Integration.AsNoTracking().ToListAsync(ct);
-
-    public async Task<IntegrationEntity> CreateIntegrationAsync(IntegrationData data, CancellationToken ct)
+    public async Task<Integration> CreateIntegrationAsync(IntegrationData data, CancellationToken ct)
     {
         var integration = new IntegrationEntity
         {
@@ -35,7 +32,7 @@ public class MetadataService : IMetadataService
         {
             await _dbContext.SaveChangesAsync(ct);
             _logger.LogInformation("Created integration: {I}", integration);
-            return integration;
+            return integration.ToDto(_sqids);
         }
         catch (Exception ex)
         {
@@ -43,22 +40,23 @@ public class MetadataService : IMetadataService
         }
     }
 
-    public async Task<bool> DeleteIntegrationAsync(long id, CancellationToken ct)
+    public async Task<bool> DeleteIntegrationAsync(string id, CancellationToken ct)
     {
-        _dbContext.Integration.Remove(new IntegrationEntity { Id = id });
+        var decodedId = _sqids.DecodeSingle(id);
+        _dbContext.Integration.Remove(new IntegrationEntity { Id = decodedId });
         if (await _dbContext.SaveDeleteAsync(ct))
         {
-            _logger.LogInformation("Deleted integration with ID: {Id}", id);
+            _logger.LogInformation("Deleted integration with ID: {Id}", decodedId);
             return true;
         }
 
         return false;
     }
 
-    public async Task<List<TagEntity>> GetTagsAsync(CancellationToken ct) =>
-        await _dbContext.Tag.AsNoTracking().ToListAsync(ct);
+    public async Task<List<Tag>> GetTagsAsync(CancellationToken ct) =>
+        (await _dbContext.Tag.AsNoTracking().ToListAsync(ct)).ToDto(_sqids).ToList();
 
-    public async Task<TagEntity> CreateTagAsync(TagData data, CancellationToken ct)
+    public async Task<Tag> CreateTagAsync(TagData data, CancellationToken ct)
     {
         var tag = new TagEntity
         {
@@ -72,7 +70,7 @@ public class MetadataService : IMetadataService
         {
             await _dbContext.SaveChangesAsync(ct);
             _logger.LogInformation("Created tag: {T}", tag);
-            return tag;
+            return tag.ToDto(_sqids);
         }
         catch (Exception ex)
         {
@@ -80,22 +78,23 @@ public class MetadataService : IMetadataService
         }
     }
 
-    public async Task<bool> DeleteTagAsync(long id, CancellationToken ct)
+    public async Task<bool> DeleteTagAsync(string id, CancellationToken ct)
     {
-        _dbContext.Tag.Remove(new TagEntity { Id = id });
+        var decodedId = _sqids.DecodeSingle(id);
+        _dbContext.Tag.Remove(new TagEntity { Id = decodedId });
         if (await _dbContext.SaveDeleteAsync(ct))
         {
-            _logger.LogInformation("Deleted tag with ID: {Id}", id);
+            _logger.LogInformation("Deleted tag with ID: {Id}", decodedId);
             return true;
         }
 
         return false;
     }
 
-    public async Task<List<LocationEntity>> GetLocationsAsync(CancellationToken ct) =>
-        await _dbContext.Location.AsNoTracking().ToListAsync(ct);
+    public async Task<List<Location>> GetLocationsAsync(CancellationToken ct) =>
+        (await _dbContext.Location.AsNoTracking().ToListAsync(ct)).ToDto(_sqids).ToList();
 
-    public async Task<LocationEntity> CreateLocationAsync(LocationData data, CancellationToken ct)
+    public async Task<Location> CreateLocationAsync(LocationData data, CancellationToken ct)
     {
         var location = new LocationEntity
         {
@@ -110,7 +109,7 @@ public class MetadataService : IMetadataService
         {
             await _dbContext.SaveChangesAsync(ct);
             _logger.LogInformation("Created location: {L}", location);
-            return location;
+            return location.ToDto(_sqids);
         }
         catch (Exception ex)
         {
@@ -118,12 +117,13 @@ public class MetadataService : IMetadataService
         }
     }
 
-    public async Task<bool> DeleteLocationAsync(long id, CancellationToken ct)
+    public async Task<bool> DeleteLocationAsync(string id, CancellationToken ct)
     {
-        _dbContext.Location.Remove(new() { Id = id });
+        var decodedId = _sqids.DecodeSingle(id);
+        _dbContext.Location.Remove(new() { Id = decodedId });
         if (await _dbContext.SaveDeleteAsync(ct))
         {
-            _logger.LogInformation("Deleted location with ID: {Id}", id);
+            _logger.LogInformation("Deleted location with ID: {Id}", decodedId);
             return true;
         }
 

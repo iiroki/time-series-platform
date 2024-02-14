@@ -2,5 +2,5 @@ namespace Iiroki.TimeSeriesPlatform.Models;
 
 public record Tag : TagData
 {
-    public required long Id { get; init; }
+    public required string Id { get; init; }
 }

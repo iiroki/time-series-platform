@@ -8,12 +8,21 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Sqids;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Iiroki.TimeSeriesPlatform.Extensions;
 
 public static class StartupExtensions
 {
+    private const string SqidsAlphabets = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789";
+
+    /// <summary>
+    /// Adds Sqids encoder to services.
+    /// </summary>
+    public static void AddSqids(this IServiceCollection services) =>
+        services.AddSingleton(new SqidsEncoder<long>(new() { Alphabet = SqidsAlphabets, MinLength = 6 }));
+
     /// <summary>
     /// Adds default JSON options to services.
     /// </summary>
@@ -55,6 +64,7 @@ public static class StartupExtensions
             opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Time Series Platform" });
             opt.OperationFilter<TspSwaggerFilter>();
             opt.SupportNonNullableReferenceTypes();
+            opt.UseAllOfToExtendReferenceSchemas();
             opt.IncludeXmlComments(
                 Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml")
             );
