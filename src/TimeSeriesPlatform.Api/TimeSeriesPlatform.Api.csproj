@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <RootNamespace>Iiroki.TimeSeriesPlatform.Api</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimeSeriesPlatform.Core\TimeSeriesPlatform.Core.csproj" />
+    <ProjectReference Include="..\TimeSeriesPlatform.Utilities\TimeSeriesPlatform.Utilities.csproj" />
+    <ProjectReference Include="..\TimeSeriesPlatform.Infrastructure\TimeSeriesPlatform.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>

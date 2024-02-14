@@ -1,6 +1,6 @@
 # Time Series Platfrom
 
-Time Series Platform (TSP), built with .NET and Timescale, is a simple web application to work with time series data.
+Time Series Platform (TSP), built with .NET and Timescale, is a web application to work with time series data.
 
 The project is mainly done for learning purposes and the main thing about this project is to experiment with
 different technologies and see how they integrate with each other.
@@ -8,13 +8,15 @@ different technologies and see how they integrate with each other.
 Requirements for the project, as simple as they currently are, come from real-life scenarios,
 as the is also meant to be used in production (at least by me). 
 
-See [**"Tech Stack"**](#tech-stack) and [**"Features"**](#features) below for more information about the used technologies.
-
-# Tech Stack
+# Technologies & Architecture
 
 - **Framework:**
     - .NET 8
     - ASP.NET Core Web API
+- **Architecture:** The project utilized [.NET Clean Architecture](https://learn.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture) to divide components into layers.
+    - Infrastructure: TODO
+    - Core: TODO
+    - API: TODO
 - **Database:**
     - [Timescale](https://www.timescale.com/) for time series data using Postgres
     - [EF Core](https://learn.microsoft.com/en-us/ef/core/) for schema definitions and migrations
@@ -34,10 +36,11 @@ See [**"Tech Stack"**](#tech-stack) and [**"Features"**](#features) below for mo
 In order to work with time series data, Time Series Platform uses the following concepts:
 - _Integration:_ Data source that produces time series data
     - Integrations should be manually configured in order to enable data ingestion!
-- _Tag:_ Measurement identifier, that are used to query the measurements.
-- _Location_: Measurements can also be bound to location, but do not have to.
-    - For example, a temperature tag can receive values from various location.
-    - Locations can be used to distinguish measurements (example: temperature) from the same tag and integration.
+- _Tag:_ Main identifier for measurements, which means all measurements are connected to a tag.
+    - Tags can be seen as "signals", like a temperature signal, for example.
+- _Location_: Measurements can also be bound to specific locations.
+    - For example, a temperature tag can receive values from various locations.
+    - Locations can be used to distinguish measurements of a specific tag (for example, temperature) inside the same integration.
 - _Measurement_: The actual time series data of Time Series Platform, which contains numerical observations at various time intervals.
 
 # Features
