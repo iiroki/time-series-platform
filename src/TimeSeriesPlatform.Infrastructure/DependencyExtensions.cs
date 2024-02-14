@@ -18,9 +18,7 @@ public static class DependencyExtensions
     public static IServiceCollection AddTspDatabase(this IServiceCollection services, IConfiguration config)
     {
         var source = TspDbContext.CreateSource(config);
-        return services
-            .AddSingleton(source)
-            .AddDbContext<TspDbContext>(opt => opt.UseNpgsql(source));
+        return services.AddSingleton(source).AddDbContext<TspDbContext>(opt => opt.UseNpgsql(source));
     }
 
     /// <summary>

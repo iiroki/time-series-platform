@@ -9,11 +9,7 @@ namespace Iiroki.TimeSeriesPlatform.Application;
 public static class DependencyExtensions
 {
     public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration config) =>
-        services
-            .AddTspDatabase(config)
-            .AddSqids()
-            .AddMetadataService()
-            .AddMeasurementService();
+        services.AddTspDatabase(config).AddSqids().AddMetadataService().AddMeasurementService();
 
     public static IServiceCollection AddMetadataService(this IServiceCollection services) =>
         services.AddScoped<IMetadataService, MetadataService>();

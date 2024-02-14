@@ -2,13 +2,13 @@ using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Iiroki.TimeSeriesPlatform.Api.Middleware;
+using Iiroki.TimeSeriesPlatform.Api.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Microsoft.Extensions.DependencyInjection;
-using Iiroki.TimeSeriesPlatform.Api.Services;
 
 namespace Iiroki.TimeSeriesPlatform.Api.Extensions;
 
