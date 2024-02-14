@@ -1,12 +1,13 @@
 using System.Diagnostics;
-using Iiroki.TimeSeriesPlatform.Core.Extensions;
-using Iiroki.TimeSeriesPlatform.Core.Models.Dto;
-using Iiroki.TimeSeriesPlatform.Core.Services.Exceptions;
+using Iiroki.TimeSeriesPlatform.Application.Extensions;
+using Iiroki.TimeSeriesPlatform.Domain.Models;
+using Iiroki.TimeSeriesPlatform.Domain.Services;
+using Iiroki.TimeSeriesPlatform.Domain.Services.Exceptions;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Database.Queries;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 
-namespace Iiroki.TimeSeriesPlatform.Core.Services;
+namespace Iiroki.TimeSeriesPlatform.Infrastructure.Services;
 
 public class MeasurementService : IMeasurementService
 {

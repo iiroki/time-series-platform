@@ -19,7 +19,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\TimeSeriesPlatform.Core\TimeSeriesPlatform.Core.csproj" />
     <ProjectReference Include="..\..\src\TimeSeriesPlatform.Infrastructure\TimeSeriesPlatform.Infrastructure.csproj" />
     <ProjectReference Include="..\..\src\TimeSeriesPlatform.Api\TimeSeriesPlatform.Api.csproj" />
   </ItemGroup>

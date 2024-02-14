@@ -1,6 +1,7 @@
-using Iiroki.TimeSeriesPlatform.Core.Models.Dto;
-using Iiroki.TimeSeriesPlatform.Core.Services;
+using Iiroki.TimeSeriesPlatform.Domain.Models;
+using Iiroki.TimeSeriesPlatform.Domain.Services;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
+using Iiroki.TimeSeriesPlatform.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using NSubstitute;

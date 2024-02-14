@@ -1,9 +1,8 @@
-using Iiroki.TimeSeriesPlatform.Infrastructure.Extensions;
+using Iiroki.TimeSeriesPlatform.Domain.Extensions;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Npgsql;
-using Iiroki.TimeSeriesPlatform.Utilities.Extensions;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database;
 

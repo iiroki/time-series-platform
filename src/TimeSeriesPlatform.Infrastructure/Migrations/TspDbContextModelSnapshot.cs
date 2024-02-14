@@ -8,7 +8,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Iiroki.TimeSeriesPlatform.InfrastructureMigrations
+namespace Iiroki.TimeSeriesPlatform.Infrastructure.Migrations
 {
     [DbContext(typeof(TspDbContext))]
     partial class TspDbContextModelSnapshot : ModelSnapshot

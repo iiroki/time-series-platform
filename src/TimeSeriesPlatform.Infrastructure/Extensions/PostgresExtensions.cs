@@ -1,4 +1,4 @@
-using Iiroki.TimeSeriesPlatform.Core.Models.Internal;
+using Iiroki.TimeSeriesPlatform.Domain.Models.Internal;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 using Npgsql.Replication.PgOutput;
 using Npgsql.Replication.PgOutput.Messages;

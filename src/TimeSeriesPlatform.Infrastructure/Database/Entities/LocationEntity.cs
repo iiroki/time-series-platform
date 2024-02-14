@@ -1,4 +1,4 @@
-using Iiroki.TimeSeriesPlatform.Core.Models;
+using Iiroki.TimeSeriesPlatform.Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;

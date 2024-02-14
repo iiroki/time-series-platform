@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace Iiroki.TimeSeriesPlatform.InfrastructureMigrations
+namespace Iiroki.TimeSeriesPlatform.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class AddMeasurementIndexes : Migration

@@ -1,9 +1,9 @@
-using Iiroki.TimeSeriesPlatform.Core.Models.Internal;
-using Iiroki.TimeSeriesPlatform.Core.Util;
-using Iiroki.TimeSeriesPlatform.Infrastructure;
+using Iiroki.TimeSeriesPlatform.Domain.Extensions;
+using Iiroki.TimeSeriesPlatform.Domain.Models.Internal;
+using Iiroki.TimeSeriesPlatform.Domain.Services;
+using Iiroki.TimeSeriesPlatform.Domain.Util;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Database;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Extensions;
-using Iiroki.TimeSeriesPlatform.Utilities.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Npgsql;
@@ -11,7 +11,7 @@ using Npgsql.Replication;
 using Npgsql.Replication.PgOutput;
 using Npgsql.Replication.PgOutput.Messages;
 
-namespace Iiroki.TimeSeriesPlatform.Core.Services;
+namespace Iiroki.TimeSeriesPlatform.Infrastructure.Services;
 
 public class MeasurementListenerService : IMeasurementListenerService
 {

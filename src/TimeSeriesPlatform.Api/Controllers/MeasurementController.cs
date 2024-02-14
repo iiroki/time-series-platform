@@ -1,7 +1,7 @@
 using Iiroki.TimeSeriesPlatform.Api.Constants;
 using Iiroki.TimeSeriesPlatform.Api.Extensions;
-using Iiroki.TimeSeriesPlatform.Core.Models.Dto;
-using Iiroki.TimeSeriesPlatform.Core.Services;
+using Iiroki.TimeSeriesPlatform.Domain.Models;
+using Iiroki.TimeSeriesPlatform.Domain.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

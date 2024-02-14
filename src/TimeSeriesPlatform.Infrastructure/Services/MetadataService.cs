@@ -1,6 +1,7 @@
-using Iiroki.TimeSeriesPlatform.Core.Extensions;
-using Iiroki.TimeSeriesPlatform.Core.Models;
-using Iiroki.TimeSeriesPlatform.Core.Services.Exceptions;
+using Iiroki.TimeSeriesPlatform.Application.Extensions;
+using Iiroki.TimeSeriesPlatform.Domain.Models;
+using Iiroki.TimeSeriesPlatform.Domain.Services;
+using Iiroki.TimeSeriesPlatform.Domain.Services.Exceptions;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Database;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 using Iiroki.TimeSeriesPlatform.Infrastructure.Extensions;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Sqids;
 
-namespace Iiroki.TimeSeriesPlatform.Core.Services;
+namespace Iiroki.TimeSeriesPlatform.Infrastructure.Services;
 
 public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, ILogger<MetadataService> logger)
     : IMetadataService

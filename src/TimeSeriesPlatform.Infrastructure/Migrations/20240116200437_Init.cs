@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Iiroki.TimeSeriesPlatform.InfrastructureMigrations
+namespace Iiroki.TimeSeriesPlatform.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Init : Migration

@@ -1,4 +1,4 @@
-using Iiroki.TimeSeriesPlatform.Utilities.Extensions;
+using Iiroki.TimeSeriesPlatform.Domain.Extensions;
 using Microsoft.Extensions.Configuration;
 
 namespace Iiroki.TimeSeriesPlatform.Api.Services;

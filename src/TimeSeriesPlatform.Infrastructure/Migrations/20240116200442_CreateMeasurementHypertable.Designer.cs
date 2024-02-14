@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Iiroki.TimeSeriesPlatform.InfrastructureMigrations
+namespace Iiroki.TimeSeriesPlatform.Infrastructure.Migrations
 {
     [DbContext(typeof(TspDbContext))]
     [Migration("20240116200442_CreateMeasurementHypertable")]

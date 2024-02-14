@@ -8,13 +8,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Microsoft.Extensions.DependencyInjection;
-using Iiroki.TimeSeriesPlatform.Core.Services;
 using Iiroki.TimeSeriesPlatform.Api.Services;
 
 namespace Iiroki.TimeSeriesPlatform.Api.Extensions;
 
 public static class StartupExtensions
 {
+    /// <summary>
+    /// Adds the basic API key authentication to services.
+    /// </summary>
+    public static void AddApiKeyAuthentication(this IServiceCollection services) =>
+        services
+            .AddSingleton<IApiKeyService, ApiKeyService>()
+            .AddAuthentication()
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
+
     /// <summary>
     /// Adds default JSON options to services.
     /// </summary>
@@ -27,19 +35,14 @@ public static class StartupExtensions
         });
 
     /// <summary>
-    /// Adds the basic API key authentication to services.
+    /// Adds "Content-Type: application/json" attributes to services.
     /// </summary>
-    public static void AddApiKeyAuthentication(this IServiceCollection services) =>
-        services
-            .AddSingleton<IApiKeyService, ApiKeyService>()
-            .AddAuthentication()
-            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
-
-    public static IServiceCollection AddMetadataService(this IServiceCollection services) =>
-        services.AddScoped<IMetadataService, MetadataService>();
-
-    public static IServiceCollection AddMeasurementService(this IServiceCollection services) =>
-        services.AddScoped<IMeasurementService, MeasurementService>();
+    public static void AddJsonContentTypeAttributes(this IServiceCollection services) =>
+        services.AddMvcCore(opt =>
+        {
+            opt.Filters.Add(new ConsumesAttribute("application/json"));
+            opt.Filters.Add(new ProducesAttribute("application/json"));
+        });
 
     /// <summary>
     /// Adds Swagger documentation to services.
@@ -81,16 +84,6 @@ public static class StartupExtensions
             );
         });
     }
-
-    /// <summary>
-    /// Adds "Content-Type: application/json" attributes to services.
-    /// </summary>
-    public static void AddJsonContentTypeAttributes(this IServiceCollection services) =>
-        services.AddMvcCore(opt =>
-        {
-            opt.Filters.Add(new ConsumesAttribute("application/json"));
-            opt.Filters.Add(new ProducesAttribute("application/json"));
-        });
 
     private class TspSwaggerFilter : IOperationFilter
     {

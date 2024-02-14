@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Iiroki.TimeSeriesPlatform.Application</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TimeSeriesPlatform.Domain\TimeSeriesPlatform.Domain.csproj" />
+    <ProjectReference Include="..\TimeSeriesPlatform.Infrastructure\TimeSeriesPlatform.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
