@@ -5,10 +5,14 @@ using Microsoft.EntityFrameworkCore;
 namespace Iiroki.TimeSeriesPlatform.Database.Entities;
 
 /// <summary>
-/// Measurement schema (hypertable).
+/// Measurement schema (hypertable).<br/>
+/// <br/>
+/// Unique index is defined in "TspDbContext"!
 /// </summary>
 [Keyless]
-// Unique index is defined in "TspDbContext"!
+[Index(nameof(TagId), nameof(Timestamp), IsDescending = [false, true])]
+[Index(nameof(TagId), nameof(LocationId), nameof(Timestamp), IsDescending = [false, false, true])]
+[Index(nameof(VersionTimestamp), IsDescending = [true])]
 public class MeasurementEntity
 {
     public long IntegrationId { get; set; }
@@ -16,7 +20,7 @@ public class MeasurementEntity
     public long TagId { get; set; }
 
     /// <summary>
-    /// The measurement might be bound to a location, but does not have to.
+    /// The measurement might be bound to a location, but does not have to be.
     /// </summary>
     public long? LocationId { get; set; }
 
