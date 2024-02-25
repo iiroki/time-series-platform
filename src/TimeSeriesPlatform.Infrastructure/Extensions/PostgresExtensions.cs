@@ -5,7 +5,7 @@ using Npgsql.Replication.PgOutput.Messages;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Extensions;
 
-public static class PostgresExtensions
+internal static class PostgresExtensions
 {
     public static async Task<MeasurementChange?> ToMeasurementChange(this UpdateMessage msg) =>
         await ToMeasurementChangeInternal(msg.NewRow, msg.Relation.Columns);

@@ -13,7 +13,7 @@ using Npgsql.Replication.PgOutput.Messages;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Services;
 
-public class MeasurementListenerService : IMeasurementListenerService
+internal class MeasurementListenerService : IMeasurementListenerService
 {
     private readonly string PubName = $"_pub_measurement_listener";
     private readonly string SlotName = $"_slot_measurement_listener";

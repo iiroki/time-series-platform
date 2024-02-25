@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\TimeSeriesPlatform.Application\TimeSeriesPlatform.Application.csproj" />
     <ProjectReference Include="..\TimeSeriesPlatform.Domain\TimeSeriesPlatform.Domain.csproj" />
+    <ProjectReference Include="..\TimeSeriesPlatform.Infrastructure\TimeSeriesPlatform.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

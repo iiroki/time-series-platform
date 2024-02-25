@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Design;
 
-public class OperationalDbDesignFactory : IDesignTimeDbContextFactory<TspDbContext>
+internal class OperationalDbDesignFactory : IDesignTimeDbContextFactory<TspDbContext>
 {
-    public TspDbContext CreateDbContext() => CreateDbContext(new string[] { });
+    public TspDbContext CreateDbContext() => CreateDbContext([]);
 
     public TspDbContext CreateDbContext(string[] _)
     {

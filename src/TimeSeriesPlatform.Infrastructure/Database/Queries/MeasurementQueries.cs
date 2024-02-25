@@ -2,7 +2,7 @@ using Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Queries;
 
-public static class MeasurementQueries
+internal static class MeasurementQueries
 {
     private const string IntegrationSubquery = "_integration";
     private const string TagSubquery = "_tag";

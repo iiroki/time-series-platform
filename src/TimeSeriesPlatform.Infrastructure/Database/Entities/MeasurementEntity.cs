@@ -12,7 +12,7 @@ namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 [Index(nameof(TagId), nameof(Timestamp), IsDescending = [false, true])]
 [Index(nameof(TagId), nameof(LocationId), nameof(Timestamp), IsDescending = [false, false, true])]
 [Index(nameof(VersionTimestamp), IsDescending = [true])]
-public class MeasurementEntity
+internal class MeasurementEntity
 {
     public long IntegrationId { get; set; }
 

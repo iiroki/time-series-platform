@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 
 [PrimaryKey(nameof(Id))]
-public class IdentifierEntityBase
+internal class IdentifierEntityBase
 {
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public long Id { get; set; }

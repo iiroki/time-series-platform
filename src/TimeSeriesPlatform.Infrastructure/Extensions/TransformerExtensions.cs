@@ -4,9 +4,9 @@ using Sqids;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Extensions;
 
-public static class TransformerExtensions
+internal static class TransformerExtensions
 {
-    public static Integration ToDto(this IntegrationEntity integration, SqidsEncoder<long> sqids) =>
+    public static Integration ToDomain(this IntegrationEntity integration, SqidsEncoder<long> sqids) =>
         new()
         {
             Id = sqids.Encode(integration.Id),
@@ -14,12 +14,12 @@ public static class TransformerExtensions
             Slug = integration.Slug
         };
 
-    public static IEnumerable<Integration> ToDto(
+    public static IEnumerable<Integration> ToDomain(
         this IEnumerable<IntegrationEntity> integrations,
         SqidsEncoder<long> sqids
-    ) => integrations.Select(i => i.ToDto(sqids));
+    ) => integrations.Select(i => i.ToDomain(sqids));
 
-    public static Tag ToDto(this TagEntity tag, SqidsEncoder<long> sqids) =>
+    public static Tag ToDomain(this TagEntity tag, SqidsEncoder<long> sqids) =>
         new()
         {
             Id = sqids.Encode(tag.Id),
@@ -27,10 +27,10 @@ public static class TransformerExtensions
             Slug = tag.Slug
         };
 
-    public static IEnumerable<Tag> ToDto(this IEnumerable<TagEntity> tags, SqidsEncoder<long> sqids) =>
-        tags.Select(t => t.ToDto(sqids));
+    public static IEnumerable<Tag> ToDomain(this IEnumerable<TagEntity> tags, SqidsEncoder<long> sqids) =>
+        tags.Select(t => t.ToDomain(sqids));
 
-    public static Location ToDto(this LocationEntity location, SqidsEncoder<long> sqids) =>
+    public static Location ToDomain(this LocationEntity location, SqidsEncoder<long> sqids) =>
         new()
         {
             Id = sqids.Encode(location.Id),
@@ -39,6 +39,8 @@ public static class TransformerExtensions
             Type = location.Type
         };
 
-    public static IEnumerable<Location> ToDto(this IEnumerable<LocationEntity> locations, SqidsEncoder<long> sqids) =>
-        locations.Select(l => l.ToDto(sqids));
+    public static IEnumerable<Location> ToDomain(
+        this IEnumerable<LocationEntity> locations,
+        SqidsEncoder<long> sqids
+    ) => locations.Select(l => l.ToDomain(sqids));
 }

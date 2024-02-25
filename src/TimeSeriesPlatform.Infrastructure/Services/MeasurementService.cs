@@ -9,7 +9,7 @@ using Npgsql;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Services;
 
-public class MeasurementService : IMeasurementService
+internal class MeasurementService : IMeasurementService
 {
     private readonly NpgsqlDataSource _dbSource;
     private readonly ILogger<MeasurementService> _logger;

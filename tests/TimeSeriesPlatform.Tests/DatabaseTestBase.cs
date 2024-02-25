@@ -59,7 +59,7 @@ public class DatabaseTestBase
         await dbContext.Database.EnsureCreatedAsync();
     }
 
-    protected TspDbContext CreateDbContext() => new(_dbOptions!);
+    internal TspDbContext CreateDbContext() => new(_dbOptions!);
 
-    protected NpgsqlDataSource CreateDbSource() => TspDbContext.CreateSource(_config!);
+    internal NpgsqlDataSource CreateDbSource() => TspDbContext.CreateSource(_config!);
 }

@@ -9,7 +9,7 @@ namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database;
 /// <summary>
 /// Time Series Platform database context.
 /// </summary>
-public class TspDbContext(DbContextOptions<TspDbContext> opt) : DbContext(opt)
+internal class TspDbContext(DbContextOptions<TspDbContext> opt) : DbContext(opt)
 {
     public const string Schema = "tsp";
 

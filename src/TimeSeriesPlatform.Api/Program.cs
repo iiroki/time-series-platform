@@ -1,4 +1,3 @@
-using Iiroki.TimeSeriesPlatform.Api.Extensions;
 using Iiroki.TimeSeriesPlatform.Application;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,13 +5,14 @@ using Microsoft.Extensions.DependencyInjection;
 // Configuration:
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddJsonOptions();
-builder.Services.AddApiKeyAuthentication();
-builder.Services.AddApplicationServices(builder.Configuration);
-
-builder.Services.AddControllers();
-builder.Services.AddSwaggerDocumentation();
-builder.Services.AddJsonContentTypeAttributes();
+builder
+    .Services
+    .AddInfrastructureServices(builder.Configuration)
+    .AddApiKeyAuthentication()
+    .AddJsonOptions()
+    .AddJsonContentTypeAttributes()
+    .AddSwaggerDocumentation()
+    .AddControllers();
 
 // Request pipeline:
 var app = builder.Build();

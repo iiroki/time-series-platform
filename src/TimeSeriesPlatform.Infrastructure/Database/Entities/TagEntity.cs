@@ -6,7 +6,7 @@ namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 /// Tag schema.
 /// </summary>
 [Index(nameof(Slug), IsUnique = true)]
-public class TagEntity : IdentifierEntityBase
+internal class TagEntity : IdentifierEntityBase
 {
     public string Slug { get; set; } = default!;
 

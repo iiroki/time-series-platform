@@ -7,7 +7,7 @@ namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 /// Location schema.
 /// </summary>
 [Index(nameof(Slug), IsUnique = true)]
-public class LocationEntity : IdentifierEntityBase
+internal class LocationEntity : IdentifierEntityBase
 {
     public string Name { get; set; } = default!;
 

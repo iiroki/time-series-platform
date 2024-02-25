@@ -1,32 +1,44 @@
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Iiroki.TimeSeriesPlatform.Api;
 using Iiroki.TimeSeriesPlatform.Api.Middleware;
 using Iiroki.TimeSeriesPlatform.Api.Services;
+using Iiroki.TimeSeriesPlatform.Infrastructure;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Iiroki.TimeSeriesPlatform.Api.Extensions;
+namespace Iiroki.TimeSeriesPlatform.Application;
 
-public static class StartupExtensions
+public static class DependencyExtensions
 {
+    public static IServiceCollection AddInfrastructureServices(
+        this IServiceCollection services,
+        IConfiguration config
+    ) => services.AddTspDatabase(config).AddSqids().AddMetadataService().AddMeasurementService();
+
     /// <summary>
     /// Adds the basic API key authentication to services.
     /// </summary>
-    public static void AddApiKeyAuthentication(this IServiceCollection services) =>
+    public static IServiceCollection AddApiKeyAuthentication(this IServiceCollection services)
+    {
         services
             .AddSingleton<IApiKeyService, ApiKeyService>()
             .AddAuthentication()
             .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>(Config.ApiKey, _ => { });
 
+        return services;
+    }
+
     /// <summary>
     /// Adds default JSON options to services.
     /// </summary>
-    public static void AddJsonOptions(this IServiceCollection services) =>
+    public static IServiceCollection AddJsonOptions(this IServiceCollection services) =>
         services.Configure<JsonOptions>(opt =>
         {
             opt.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
@@ -37,22 +49,26 @@ public static class StartupExtensions
     /// <summary>
     /// Adds "Content-Type: application/json" attributes to services.
     /// </summary>
-    public static void AddJsonContentTypeAttributes(this IServiceCollection services) =>
+    public static IServiceCollection AddJsonContentTypeAttributes(this IServiceCollection services)
+    {
         services.AddMvcCore(opt =>
         {
             opt.Filters.Add(new ConsumesAttribute("application/json"));
             opt.Filters.Add(new ProducesAttribute("application/json"));
         });
 
+        return services;
+    }
+
     /// <summary>
     /// Adds Swagger documentation to services.
     /// </summary>
-    public static void AddSwaggerDocumentation(this IServiceCollection services)
+    public static IServiceCollection AddSwaggerDocumentation(this IServiceCollection services)
     {
         services.AddSwaggerGen(opt =>
         {
             opt.SwaggerDoc("v1", new OpenApiInfo { Title = "Time Series Platform" });
-            opt.OperationFilter<TspSwaggerFilter>();
+            opt.OperationFilter<TspSwaggerRoleFilter>();
             opt.SupportNonNullableReferenceTypes();
             opt.UseAllOfToExtendReferenceSchemas();
             opt.IncludeXmlComments(
@@ -83,9 +99,11 @@ public static class StartupExtensions
                 }
             );
         });
+
+        return services;
     }
 
-    private class TspSwaggerFilter : IOperationFilter
+    private class TspSwaggerRoleFilter : IOperationFilter
     {
         public void Apply(OpenApiOperation operation, OperationFilterContext ctx)
         {

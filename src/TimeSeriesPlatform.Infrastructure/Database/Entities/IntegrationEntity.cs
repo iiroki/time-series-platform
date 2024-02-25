@@ -6,7 +6,7 @@ namespace Iiroki.TimeSeriesPlatform.Infrastructure.Database.Entities;
 /// Integration schema.
 /// </summary>
 [Index(nameof(Slug), IsUnique = true)]
-public class IntegrationEntity : IdentifierEntityBase
+internal class IntegrationEntity : IdentifierEntityBase
 {
     public string Name { get; set; } = default!;
 

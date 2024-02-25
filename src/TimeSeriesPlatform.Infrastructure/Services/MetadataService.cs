@@ -11,7 +11,7 @@ using Sqids;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Services;
 
-public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, ILogger<MetadataService> logger)
+internal class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, ILogger<MetadataService> logger)
     : IMetadataService
 {
     private readonly TspDbContext _dbContext = dbContext;
@@ -19,7 +19,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
     private readonly ILogger<MetadataService> _logger = logger;
 
     public async Task<List<Integration>> GetIntegrationsAsync(CancellationToken ct) =>
-        (await _dbContext.Integration.AsNoTracking().ToListAsync(ct)).ToDto(_sqids).ToList();
+        (await _dbContext.Integration.AsNoTracking().ToListAsync(ct)).ToDomain(_sqids).ToList();
 
     public async Task<Integration> CreateIntegrationAsync(IntegrationData data, CancellationToken ct)
     {
@@ -35,7 +35,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
         {
             await _dbContext.SaveChangesAsync(ct);
             _logger.LogInformation("Created integration: {I}", integration);
-            return integration.ToDto(_sqids);
+            return integration.ToDomain(_sqids);
         }
         catch (Exception ex)
         {
@@ -57,7 +57,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
     }
 
     public async Task<List<Tag>> GetTagsAsync(CancellationToken ct) =>
-        (await _dbContext.Tag.AsNoTracking().ToListAsync(ct)).ToDto(_sqids).ToList();
+        (await _dbContext.Tag.AsNoTracking().ToListAsync(ct)).ToDomain(_sqids).ToList();
 
     public async Task<Tag> CreateTagAsync(TagData data, CancellationToken ct)
     {
@@ -73,7 +73,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
         {
             await _dbContext.SaveChangesAsync(ct);
             _logger.LogInformation("Created tag: {T}", tag);
-            return tag.ToDto(_sqids);
+            return tag.ToDomain(_sqids);
         }
         catch (Exception ex)
         {
@@ -95,7 +95,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
     }
 
     public async Task<List<Location>> GetLocationsAsync(CancellationToken ct) =>
-        (await _dbContext.Location.AsNoTracking().ToListAsync(ct)).ToDto(_sqids).ToList();
+        (await _dbContext.Location.AsNoTracking().ToListAsync(ct)).ToDomain(_sqids).ToList();
 
     public async Task<Location> CreateLocationAsync(LocationData data, CancellationToken ct)
     {
@@ -112,7 +112,7 @@ public class MetadataService(TspDbContext dbContext, SqidsEncoder<long> sqids, I
         {
             await _dbContext.SaveChangesAsync(ct);
             _logger.LogInformation("Created location: {L}", location);
-            return location.ToDto(_sqids);
+            return location.ToDomain(_sqids);
         }
         catch (Exception ex)
         {

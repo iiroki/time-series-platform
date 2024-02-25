@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Iiroki.TimeSeriesPlatform.Infrastructure.Extensions;
 
-public static class EntityExtensions
+internal static class EntityExtensions
 {
     public static async Task<bool> SaveDeleteAsync(this DbContext dbContext, CancellationToken ct)
     {
