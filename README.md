@@ -13,11 +13,10 @@ as the is also meant to be used in production (at least by me).
 - **Framework:**
     - .NET 8
     - ASP.NET Core Web API
-- **Architecture:** The project utilizes Clean Architecture principles to divide components into layers.
-    - API: TODO
-    - Application: TODO
-    - Domain: TODO
-    - Infrastructure: TODO
+- **Architecture:** The project utilizes Clean Architecture principles to divide components into layers:
+    - API
+    - Domain
+    - Infrastructure
 - **Database:**
     - [Timescale](https://www.timescale.com/) for time series data using Postgres
     - [EF Core](https://learn.microsoft.com/en-us/ef/core/) for schema definitions and migrations
