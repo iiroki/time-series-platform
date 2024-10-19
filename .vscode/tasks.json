@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/TimeSeriesPlatform/TimeSeriesPlatform.csproj",
+                "${workspaceFolder}/src/TimeSeriesPlatform.Api/TimeSeriesPlatform.Api.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary;ForceNoAlign"
             ],
@@ -21,7 +21,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/TimeSeriesPlatform/TimeSeriesPlatform.csproj"
+                "${workspaceFolder}/src/TimeSeriesPlatform.Api/TimeSeriesPlatform.Api.csproj"
             ],
             "problemMatcher": "$msCompile"
         }

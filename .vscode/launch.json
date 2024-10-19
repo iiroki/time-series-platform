@@ -5,13 +5,13 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET",
+            "name": "API",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/TimeSeriesPlatform/bin/Debug/net8.0/TimeSeriesPlatform.dll",
+            "program": "${workspaceFolder}/src/TimeSeriesPlatform.Api/bin/Debug/net8.0/TimeSeriesPlatform.Api.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/TimeSeriesPlatform",
+            "cwd": "${workspaceFolder}/src/TimeSeriesPlatform.API",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
